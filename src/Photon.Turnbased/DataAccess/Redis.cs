@@ -8,7 +8,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
 {
     using System.Collections.Generic;
     using ServiceStack.Redis;
-    using ServiceStack.Text;
+    using ServiceStack;
 
     public class Redis : IDataAccess
     {

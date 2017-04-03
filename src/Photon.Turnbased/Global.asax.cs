@@ -16,10 +16,6 @@ namespace Photon.Webhooks.Turnbased
 
     using ServiceStack.Redis;
 
-    using Amazon;
-    using Amazon.S3;
-    using Amazon.DynamoDBv2;
-
     public class WebApiApplication : System.Web.HttpApplication
     {
         public static IDataAccess DataAccess;
@@ -28,10 +24,6 @@ namespace Photon.Webhooks.Turnbased
 
 
         public static PooledRedisClientManager PooledRedisClientManager;
-
-        public static AmazonS3Client AmazonS3Client;
-        // ReSharper disable once InconsistentNaming
-        public static AmazonDynamoDBClient AmazonDynamoDBClient;
 
         protected void Application_Start()
         {
@@ -54,15 +46,6 @@ namespace Photon.Webhooks.Turnbased
                   );
 
                 DataAccess = new Redis();
-            }
-            else if (ConfigurationManager.AppSettings["DataAccess"].Equals("Amazon", StringComparison.OrdinalIgnoreCase))
-            {
-                var regionEndpoint = RegionEndpoint.GetBySystemName(ConfigurationManager.AppSettings["AWSRegion"]);
-                AmazonS3Client = new AmazonS3Client(ConfigurationManager.AppSettings["AWSAccessKey"], ConfigurationManager.AppSettings["AWSSecretKey"], regionEndpoint);
-
-                AmazonDynamoDBClient = new AmazonDynamoDBClient(ConfigurationManager.AppSettings["AWSAccessKey"], ConfigurationManager.AppSettings["AWSSecretKey"]);
-
-                DataAccess = new AmazonDataAccess();
             }
             else
             {
