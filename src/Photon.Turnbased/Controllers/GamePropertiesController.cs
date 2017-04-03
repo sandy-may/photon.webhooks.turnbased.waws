@@ -27,7 +27,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
     {
         private static readonly ILog log = log4net.LogManager.GetLogger("MyLogger");
 
-        private PushWoosh pushWoosh = new PushWoosh();
+        private readonly PushWoosh pushWoosh = new PushWoosh();
 
         #region Public Methods and Operators
 
