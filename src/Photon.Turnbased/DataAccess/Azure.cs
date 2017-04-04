@@ -4,6 +4,8 @@
 //  </copyright>
 // ------------------------------------------------------------------------------------------------
 
+using Photon.Turnbased;
+
 namespace Photon.Webhooks.Turnbased.DataAccess
 {
     using System;
@@ -17,12 +19,12 @@ namespace Photon.Webhooks.Turnbased.DataAccess
 
     public class Azure : IDataAccess
     {
-        private static readonly ILog log = log4net.LogManager.GetLogger("MyLogger");
+        private static readonly ILog Log = log4net.LogManager.GetLogger("MyLogger");
 
         public bool StateExists(string appId, string key)
         {
             // Create the blob client.
-            var blobClient = WebApiApplication.CloudStorageAccount.CreateCloudBlobClient();
+            var blobClient = Startup.CloudStorageAccount.CreateCloudBlobClient();
             blobClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             // Retrieve reference to container. Containers use same name rules as tables (see table name limitations).
@@ -48,11 +50,11 @@ namespace Photon.Webhooks.Turnbased.DataAccess
         public void StateSet(string appId, string key, string state)
         {
             // Create the blob client.
-            var blobClient = WebApiApplication.CloudStorageAccount.CreateCloudBlobClient();
+            var blobClient = Startup.CloudStorageAccount.CreateCloudBlobClient();
             blobClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             // Retrieve reference to container. Containers use same name rules as tables (see table name limitations).
-            var container = blobClient.GetContainerReference(string.Format("states{0}", appId.Replace("-", "")));
+            var container = blobClient.GetContainerReference($"states{appId.Replace("-", "")}");
 
             //create for demo - this call is obsolete if container is already created manually in Azure 
             container.CreateIfNotExists();
@@ -65,11 +67,11 @@ namespace Photon.Webhooks.Turnbased.DataAccess
         public string StateGet(string appId, string key)
         {
             // Create the blob client.
-            var blobClient = WebApiApplication.CloudStorageAccount.CreateCloudBlobClient();
+            var blobClient = Startup.CloudStorageAccount.CreateCloudBlobClient();
             blobClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             // Retrieve reference to container. Containers use same name rules as tables (see table name limitations).
-            var container = blobClient.GetContainerReference(string.Format("states{0}", appId.Replace("-", "")));
+            var container = blobClient.GetContainerReference($"states{appId.Replace("-", "")}");
 
             //create for demo - this call is obsolete if container is already created manually in Azure 
             container.CreateIfNotExists();
@@ -83,7 +85,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
             //Azure throws exception if file not found
             catch (StorageException)
             {
-                if (log.IsDebugEnabled) log.DebugFormat("StateGet, state {0}/{1} not found", appId, key);
+                if (Log.IsDebugEnabled) Log.DebugFormat("StateGet, state {0}/{1} not found", appId, key);
                 return null;
             }
         }
@@ -91,11 +93,11 @@ namespace Photon.Webhooks.Turnbased.DataAccess
         public void StateDelete(string appId, string key)
         {
             // Create the blob client.
-            var blobClient = WebApiApplication.CloudStorageAccount.CreateCloudBlobClient();
+            var blobClient = Startup.CloudStorageAccount.CreateCloudBlobClient();
             blobClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             // Retrieve reference to container. Containers use same name rules as tables (see table name limitations).
-            var container = blobClient.GetContainerReference(string.Format("states{0}", appId.Replace("-", "")));
+            var container = blobClient.GetContainerReference($"states{appId.Replace("-", "")}");
 
             //create for demo - this call is obsolete if container is already created manually in Azure 
             container.CreateIfNotExists();
@@ -109,17 +111,17 @@ namespace Photon.Webhooks.Turnbased.DataAccess
             //Azure throws exception if file not found
             catch (StorageException)
             {
-                if (log.IsDebugEnabled) log.DebugFormat("StateDelete, state {0}/{1} not found", appId, key);
+                if (Log.IsDebugEnabled) Log.DebugFormat("StateDelete, state {0}/{1} not found", appId, key);
             }
         }
 
         public void GameInsert(string appId, string key, string gameId, int actorNr)
         {
-            var tableClient = WebApiApplication.CloudStorageAccount.CreateCloudTableClient();
+            var tableClient = Startup.CloudStorageAccount.CreateCloudTableClient();
             tableClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             //table names can't have "-" in the name and may not begin with a numeric character
-            var table = tableClient.GetTableReference(string.Format("games{0}", appId.Replace("-", "")));
+            var table = tableClient.GetTableReference($"games{appId.Replace("-", "")}");
 
             //create for demo - this call is obsolete if table is already created manually in Azure 
             table.CreateIfNotExists();
@@ -129,11 +131,11 @@ namespace Photon.Webhooks.Turnbased.DataAccess
 
         public void GameDelete(string appId, string key, string gameId)
         {
-            var tableClient = WebApiApplication.CloudStorageAccount.CreateCloudTableClient();
+            var tableClient = Startup.CloudStorageAccount.CreateCloudTableClient();
             tableClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             //table names can't have "-" in the name and may not begin with a numeric character
-            var table = tableClient.GetTableReference(string.Format("games{0}", appId.Replace("-", "")));
+            var table = tableClient.GetTableReference($"games{appId.Replace("-", "")}");
 
             //create for demo - this call is obsolete if table is already created manually in Azure 
             table.CreateIfNotExists();
@@ -144,17 +146,17 @@ namespace Photon.Webhooks.Turnbased.DataAccess
             }
             catch (StorageException)
             {
-                if (log.IsDebugEnabled) log.DebugFormat("GameDelete, game {0}/{1}/{2} not found", appId, key, gameId);
+                if (Log.IsDebugEnabled) Log.DebugFormat("GameDelete, game {0}/{1}/{2} not found", appId, key, gameId);
             }
         }
 
         public Dictionary<string, string> GameGetAll(string appId, string key)
         {
-            var tableClient = WebApiApplication.CloudStorageAccount.CreateCloudTableClient();
+            var tableClient = Startup.CloudStorageAccount.CreateCloudTableClient();
             tableClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             //table names can't have "-" in the name and may not begin with a numeric character
-            var table = tableClient.GetTableReference(string.Format("games{0}", appId.Replace("-", "")));
+            var table = tableClient.GetTableReference($"games{appId.Replace("-", "")}");
 
             //create for demo - this call is obsolete if table is already created manually in Azure 
             table.CreateIfNotExists();
