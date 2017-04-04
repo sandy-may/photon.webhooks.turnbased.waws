@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
+using Photon.Turnbased.Config;
 using Photon.Webhooks.Turnbased.DataAccess;
 
 namespace Photon.Turnbased
@@ -16,6 +17,7 @@ namespace Photon.Turnbased
     {
         public static IDataAccess DataAccess;
         public static CloudStorageAccount CloudStorageAccount;
+  
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -32,12 +34,10 @@ namespace Photon.Turnbased
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            if (Configuration.GetValue<String>("DataAccess").Equals("Azure", StringComparison.OrdinalIgnoreCase))
-            {
-                CloudStorageAccount = CloudStorageAccount.Parse(
-                    $"DefaultEndpointsProtocol=https;AccountName={Configuration.GetValue<String>("AzureAccountName")};AccountKey={Configuration.GetValue<String>("AzureAccountKey")}");
-                DataAccess = new Azure();
-            }
+            var connectionStrings = Configuration.GetSection("ConnectionStrings");
+            var appSettings = Configuration.GetSection("AppSettings");
+            
+            services.Configure<ConnectionStrings>(connectionStrings);
             services.AddMvc();
         }
 

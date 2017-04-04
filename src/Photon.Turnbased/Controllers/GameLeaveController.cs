@@ -4,6 +4,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Photon.Turnbased;
+
 namespace Photon.Webhooks.Turnbased.Controllers
 {
     using System.Web.Http;
@@ -33,12 +35,12 @@ namespace Photon.Webhooks.Turnbased.Controllers
             {
                 if (request.ActorNr > 0)
                 {
-                    WebApiApplication.DataAccess.GameInsert(appId, request.UserId, request.GameId, request.ActorNr);
+                    Startup.DataAccess.GameInsert(appId, request.UserId, request.GameId, request.ActorNr);
                 }
             }
             else
             {
-                WebApiApplication.DataAccess.GameDelete(appId, request.UserId, request.GameId);
+                Startup.DataAccess.GameDelete(appId, request.UserId, request.GameId);
             }
 
             var okResponse = new OkResponse();

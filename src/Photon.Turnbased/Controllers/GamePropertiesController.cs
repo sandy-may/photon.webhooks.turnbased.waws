@@ -4,6 +4,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Photon.Turnbased;
+
 namespace Photon.Webhooks.Turnbased.Controllers
 {
     using System;
@@ -27,6 +29,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
     {
         private static readonly ILog log = log4net.LogManager.GetLogger("MyLogger");
 
+        //TODO: turn this into Azure Push Notifications
         private readonly PushWoosh pushWoosh = new PushWoosh();
 
         #region Public Methods and Operators
@@ -46,7 +49,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
             if (request.State != null)
             {
                 var state = (string)JsonConvert.SerializeObject(request.State);
-                WebApiApplication.DataAccess.StateSet(appId, request.GameId, state);
+                Startup.DataAccess.StateSet(appId, request.GameId, state);
 
                 var properties = request.Properties;
                 object actorNrNext = null;
@@ -64,7 +67,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
                             userNextInTurn = (string)actor.UserId;
                         }
                     }
-                    WebApiApplication.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
+                    Startup.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
                 }
 
                 if (!string.IsNullOrEmpty(userNextInTurn))

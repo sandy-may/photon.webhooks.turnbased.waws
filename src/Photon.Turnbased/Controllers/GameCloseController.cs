@@ -4,6 +4,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Photon.Turnbased;
+
 namespace Photon.Webhooks.Turnbased.Controllers
 {
     using System.Web.Http;
@@ -44,7 +46,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
                     return errorResponse;
                 }
 
-                WebApiApplication.DataAccess.StateDelete(appId, request.GameId);
+                Startup.DataAccess.StateDelete(appId, request.GameId);
 
                 var okResponse = new OkResponse();
                 if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(okResponse));
@@ -54,8 +56,8 @@ namespace Photon.Webhooks.Turnbased.Controllers
             foreach (var actor in request.State.ActorList)
             {
                 //var listProperties = new ListProperties() { ActorNr = (int)actor.ActorNr, Properties = request.State.CustomProperties };
-                //WebApiApplication.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (string)JsonConvert.SerializeObject(listProperties));
-                WebApiApplication.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
+                //Startup.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (string)JsonConvert.SerializeObject(listProperties));
+                Startup.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
             }                
 
             //deprecated
@@ -63,12 +65,12 @@ namespace Photon.Webhooks.Turnbased.Controllers
             {
                 foreach (var actor in request.State2.ActorList)
                 {
-                    WebApiApplication.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
+                    Startup.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
                 }
             }
 
             var state = (string)JsonConvert.SerializeObject(request.State);
-            WebApiApplication.DataAccess.StateSet(appId, request.GameId, state);
+            Startup.DataAccess.StateSet(appId, request.GameId, state);
 
             var response = new OkResponse();
             if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(response));

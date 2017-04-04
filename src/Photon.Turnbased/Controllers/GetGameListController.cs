@@ -4,6 +4,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Photon.Turnbased;
+
 namespace Photon.Webhooks.Turnbased.Controllers
 {
     using System.Collections.Generic;
@@ -37,11 +39,11 @@ namespace Photon.Webhooks.Turnbased.Controllers
 
             var list = new Dictionary<string, object>();
 
-            foreach (var pair in WebApiApplication.DataAccess.GameGetAll(appId, request.UserId))
+            foreach (var pair in Startup.DataAccess.GameGetAll(appId, request.UserId))
             {
                 // exists - save result in list
-                //if (WebApiApplication.DataAccess.StateExists(appId, pair.Key))
-                var stateJson = WebApiApplication.DataAccess.StateGet(appId, pair.Key);
+                //if (Startup.DataAccess.StateExists(appId, pair.Key))
+                var stateJson = Startup.DataAccess.StateGet(appId, pair.Key);
                 if (stateJson != null)
                 {
                     dynamic customProperties = null;
@@ -58,7 +60,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
                 // not exists - delete
                 else
                 {
-                    WebApiApplication.DataAccess.GameDelete(appId, request.UserId, pair.Key);
+                    Startup.DataAccess.GameDelete(appId, request.UserId, pair.Key);
                 }
             }
 

@@ -4,6 +4,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Photon.Turnbased;
+
 namespace Photon.Webhooks.Turnbased.Controllers
 {
     using System.Web.Http;
@@ -46,7 +48,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
         private static dynamic GameCreate(GameCreateRequest request, string appId)
         {
             dynamic response;
-            if (WebApiApplication.DataAccess.StateExists(appId, request.GameId))
+            if (Startup.DataAccess.StateExists(appId, request.GameId))
             {
                 response = new ErrorResponse { Message = "Game already exists." };
                 return response;
@@ -54,11 +56,11 @@ namespace Photon.Webhooks.Turnbased.Controllers
 
             if (request.CreateOptions == null)
             {
-                WebApiApplication.DataAccess.StateSet(appId, request.GameId, string.Empty);
+                Startup.DataAccess.StateSet(appId, request.GameId, string.Empty);
             }
             else
             {
-                WebApiApplication.DataAccess.StateSet(appId, request.GameId, (string)JsonConvert.SerializeObject(request.CreateOptions));
+                Startup.DataAccess.StateSet(appId, request.GameId, (string)JsonConvert.SerializeObject(request.CreateOptions));
             }
 
             response = new OkResponse();
@@ -69,7 +71,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
         {
             dynamic response;
             string stateJson = string.Empty;
-            stateJson = WebApiApplication.DataAccess.StateGet(appId, request.GameId);
+            stateJson = Startup.DataAccess.StateGet(appId, request.GameId);
 
             if (!string.IsNullOrEmpty(stateJson))
             {
@@ -80,7 +82,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
             //TBD - check how deleteIfEmpty works with createifnot exists
             if (stateJson == string.Empty)
             {
-                WebApiApplication.DataAccess.StateDelete(appId, request.GameId);
+                Startup.DataAccess.StateDelete(appId, request.GameId);
 
                 if (log.IsDebugEnabled)
                 {

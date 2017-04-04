@@ -4,6 +4,8 @@
 //  </copyright>
 // ------------------------------------------------------------------------------------------------
 
+using Photon.Turnbased;
+
 namespace Photon.Webhooks.Turnbased.DataAccess
 {
     using System.Collections.Generic;
@@ -14,7 +16,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
     {
         public static bool Exists(string key)
         {   
-            using(var redisClient = (RedisNativeClient)WebApiApplication.PooledRedisClientManager.GetClient())
+            using(var redisClient = (RedisNativeClient)Startup.PooledRedisClientManager.GetClient())
             {
                 return redisClient.Exists(key) == 1;
             }
@@ -22,7 +24,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
 
         public static void Set(string key, string value)
         {
-            using (var redisClient = (RedisNativeClient)WebApiApplication.PooledRedisClientManager.GetClient())
+            using (var redisClient = (RedisNativeClient)Startup.PooledRedisClientManager.GetClient())
             {
                 redisClient.Set(key, value.ToUtf8Bytes());
             }
@@ -30,7 +32,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
 
         public static string Get(string key)
         {
-            using (var redisClient = (RedisNativeClient)WebApiApplication.PooledRedisClientManager.GetClient())
+            using (var redisClient = (RedisNativeClient)Startup.PooledRedisClientManager.GetClient())
             {
                 return redisClient.Get(key).FromUtf8Bytes();
             }
@@ -38,7 +40,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
 
         public static void Delete(string key)
         {
-            using (var redisClient = (RedisNativeClient)WebApiApplication.PooledRedisClientManager.GetClient())
+            using (var redisClient = (RedisNativeClient)Startup.PooledRedisClientManager.GetClient())
             {
                 redisClient.Del(key);
             }
@@ -46,7 +48,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
 
         public static void HashSet(string hashId, string key, string value)
         {
-            using (var redisClient = (RedisNativeClient)WebApiApplication.PooledRedisClientManager.GetClient())
+            using (var redisClient = (RedisNativeClient)Startup.PooledRedisClientManager.GetClient())
             {
                 redisClient.HSet(hashId, key.ToUtf8Bytes(), value.ToUtf8Bytes());
             }
@@ -56,7 +58,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
         {
             var result = new Dictionary<string, string>();
 
-            using (var redisClient = (RedisNativeClient)WebApiApplication.PooledRedisClientManager.GetClient())
+            using (var redisClient = (RedisNativeClient)Startup.PooledRedisClientManager.GetClient())
             {
                 var multiDataList = redisClient.HGetAll(hashId);
 
@@ -71,7 +73,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
 
         public static void HashDelete(string hashId, string key)
         {
-            using (var redisClient = (RedisNativeClient)WebApiApplication.PooledRedisClientManager.GetClient())
+            using (var redisClient = (RedisNativeClient)Startup.PooledRedisClientManager.GetClient())
             {
                 redisClient.HDel(hashId, key.ToUtf8Bytes());
             }

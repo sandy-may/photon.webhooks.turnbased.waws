@@ -4,7 +4,10 @@
 //  </copyright>
 // ------------------------------------------------------------------------------------------------
 
+using Microsoft.Azure;
+using Microsoft.Extensions.Options;
 using Photon.Turnbased;
+using Photon.Turnbased.Config;
 
 namespace Photon.Webhooks.Turnbased.DataAccess
 {
@@ -15,16 +18,22 @@ namespace Photon.Webhooks.Turnbased.DataAccess
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
 
-    using log4net;
 
     public class Azure : IDataAccess
     {
+        private readonly CloudStorageAccount _cloudStorageAccount;
+        public Azure(string connectionString)
+        {
+            _cloudStorageAccount = CloudStorageAccount.Parse(connectionStrings);
+        }
+
+        //TODO: Replace the logger here
         private static readonly ILog Log = log4net.LogManager.GetLogger("MyLogger");
 
         public bool StateExists(string appId, string key)
         {
             // Create the blob client.
-            var blobClient = Startup.CloudStorageAccount.CreateCloudBlobClient();
+            var blobClient = _cloudStorageAccount.CreateCloudBlobClient();
             blobClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             // Retrieve reference to container. Containers use same name rules as tables (see table name limitations).
@@ -50,7 +59,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
         public void StateSet(string appId, string key, string state)
         {
             // Create the blob client.
-            var blobClient = Startup.CloudStorageAccount.CreateCloudBlobClient();
+            var blobClient = _cloudStorageAccount.CreateCloudBlobClient();
             blobClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             // Retrieve reference to container. Containers use same name rules as tables (see table name limitations).
@@ -67,7 +76,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
         public string StateGet(string appId, string key)
         {
             // Create the blob client.
-            var blobClient = Startup.CloudStorageAccount.CreateCloudBlobClient();
+            var blobClient = _cloudStorageAccount.CreateCloudBlobClient();
             blobClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             // Retrieve reference to container. Containers use same name rules as tables (see table name limitations).
@@ -93,7 +102,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
         public void StateDelete(string appId, string key)
         {
             // Create the blob client.
-            var blobClient = Startup.CloudStorageAccount.CreateCloudBlobClient();
+            var blobClient = _cloudStorageAccount.CreateCloudBlobClient();
             blobClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             // Retrieve reference to container. Containers use same name rules as tables (see table name limitations).
@@ -117,7 +126,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
 
         public void GameInsert(string appId, string key, string gameId, int actorNr)
         {
-            var tableClient = Startup.CloudStorageAccount.CreateCloudTableClient();
+            var tableClient = _cloudStorageAccount.CreateCloudTableClient();
             tableClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             //table names can't have "-" in the name and may not begin with a numeric character
@@ -131,7 +140,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
 
         public void GameDelete(string appId, string key, string gameId)
         {
-            var tableClient = Startup.CloudStorageAccount.CreateCloudTableClient();
+            var tableClient = _cloudStorageAccount.CreateCloudTableClient();
             tableClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             //table names can't have "-" in the name and may not begin with a numeric character
@@ -152,7 +161,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
 
         public Dictionary<string, string> GameGetAll(string appId, string key)
         {
-            var tableClient = Startup.CloudStorageAccount.CreateCloudTableClient();
+            var tableClient = _cloudStorageAccount.CreateCloudTableClient();
             tableClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             //table names can't have "-" in the name and may not begin with a numeric character
