@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net452</TargetFramework>
     <RuntimeIdentifier>win7-x86</RuntimeIdentifier>
+    <ApplicationInsightsResourceId>/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourcegroups/exit-games/providers/microsoft.insights/components/Photon.Turnbased</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourcegroups/exit-games/providers/microsoft.insights/components/Photon.Turnbased</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
 
   <ItemGroup>

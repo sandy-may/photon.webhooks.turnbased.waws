@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,13 +10,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Photon.Turnbased.Config;
+using Photon.Turnbased.DataAccess;
 using Photon.Webhooks.Turnbased.DataAccess;
 
 namespace Photon.Turnbased
 {
     public class Startup
     {
-  
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
