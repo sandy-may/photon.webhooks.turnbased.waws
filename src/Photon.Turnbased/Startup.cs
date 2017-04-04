@@ -15,8 +15,6 @@ namespace Photon.Turnbased
 {
     public class Startup
     {
-        public static IDataAccess DataAccess;
-        public static CloudStorageAccount CloudStorageAccount;
   
         public Startup(IHostingEnvironment env)
         {
@@ -38,12 +36,14 @@ namespace Photon.Turnbased
             var appSettings = Configuration.GetSection("AppSettings");
             
             services.Configure<ConnectionStrings>(connectionStrings);
+            services.Configure<AppSettings>(appSettings);
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddAzureWebAppDiagnostics();
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 

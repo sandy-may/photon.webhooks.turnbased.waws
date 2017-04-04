@@ -4,46 +4,48 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Photon.Turnbased;
+using Photon.Turnbased.DataAccess;
+using ServiceStack.Logging;
 
 namespace Photon.Webhooks.Turnbased.Controllers
 {
     using System.Collections.Generic;
     using System.Web.Http;
-
     using Models;
-
-    using log4net;
-
     using Newtonsoft.Json;
-
     using ServiceStack.Text;
 
-    public class GetGameListController : ApiController
+    public class GetGameListController : Controller
     {
-        private static readonly ILog log = log4net.LogManager.GetLogger("MyLogger");
+        private readonly ILogger<GetGameListController> _logger;
 
         #region Public Methods and Operators
 
+        public GetGameListController(ILogger<GetGameListController> logger)
+        {
+            _logger = logger;
+        }
         public dynamic Post(GetGameListRequest request, string appId)
         {
-            if (log.IsDebugEnabled) log.DebugFormat("{0} - {1}", Request.RequestUri, JsonConvert.SerializeObject(request));
-
             string message;
             if (!IsValid(request, out message))
             {
                 var errorResponse = new ErrorResponse { Message = message };
-                if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(errorResponse));
+                _logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(errorResponse)}");
                 return errorResponse;
             }
 
             var list = new Dictionary<string, object>();
 
-            foreach (var pair in Startup.DataAccess.GameGetAll(appId, request.UserId))
+            foreach (var pair in DataSources.DataAccess.GameGetAll(appId, request.UserId))
             {
                 // exists - save result in list
-                //if (Startup.DataAccess.StateExists(appId, pair.Key))
-                var stateJson = Startup.DataAccess.StateGet(appId, pair.Key);
+                //if (DataSources.DataAccess.StateExists(appId, pair.Key))
+                var stateJson = DataSources.DataAccess.StateGet(appId, pair.Key);
                 if (stateJson != null)
                 {
                     dynamic customProperties = null;
@@ -60,12 +62,12 @@ namespace Photon.Webhooks.Turnbased.Controllers
                 // not exists - delete
                 else
                 {
-                    Startup.DataAccess.GameDelete(appId, request.UserId, pair.Key);
+                    DataSources.DataAccess.GameDelete(appId, request.UserId, pair.Key);
                 }
             }
 
             var getGameListResponse = new GetGameListResponse { Data = list };
-            if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(getGameListResponse));
+            _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(getGameListResponse)}");
             return getGameListResponse;
         }
 

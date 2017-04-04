@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Microsoft.Extensions.Logging;
 
 namespace Photon.Webhooks.Turnbased.PushNotifications
 {
@@ -10,25 +11,29 @@ namespace Photon.Webhooks.Turnbased.PushNotifications
     using System.Net;
     using System.Text;
     using System.Threading;
-    using log4net;
     using Newtonsoft.Json;
 
     public class PushWoosh
     {
-        private static readonly ILog log = log4net.LogManager.GetLogger("MyLogger");
+        private readonly ILogger _logger;
 
         // clients require 'application' and 'appname' 
         // server requires 'application' and 'auth'
-        private static readonly string application = ConfigurationManager.AppSettings["PushWooshApplication"];
-        private static readonly string auth = ConfigurationManager.AppSettings["PushWooshAuth"];
+        //TODO: this whole class using azure notification hub
+        private static readonly string application = "";//ConfigurationManager.AppSettings["PushWooshApplication"];
+        private static readonly string auth = "";//ConfigurationManager.AppSettings["PushWooshAuth"];
 
         private static readonly Uri uri = new Uri("https://cp.pushwoosh.com/json/1.3/createMessage");
 
+        public PushWoosh(ILogger logger)
+        {
+            _logger = logger;
+        }
         public void RequestPushNotification(Dictionary<string, string> notificationContent, string username, string usertag, string target, string appid)
         {
             if (string.IsNullOrEmpty(application) || string.IsNullOrEmpty(auth))
             {
-                log.Warn("PushWoosh is not configured. Skipping push notification.");
+                _logger.LogWarning("PushWoosh is not configured. Skipping push notification.");
                 return;
             }
 
@@ -71,11 +76,11 @@ namespace Photon.Webhooks.Turnbased.PushNotifications
             PostRequest(uri, jsonRequest);
         }
 
-        private static void PostRequest(Uri uri, string requestBody)
+        private void PostRequest(Uri uri, string requestBody)
         {
             ThreadPool.QueueUserWorkItem(o =>
                     {
-                        if (log.IsDebugEnabled) log.Debug("PushWoosh Request: " + requestBody);
+                        _logger.LogInformation($"PushWoosh Request {requestBody}");
                         try
                         {
                             HttpWebRequest request = WebRequest.Create(uri) as HttpWebRequest;
@@ -110,14 +115,14 @@ namespace Photon.Webhooks.Turnbased.PushNotifications
                                         // get the data of the stream
                                         var data = ms.ToArray();
 
-                                        if (log.IsDebugEnabled) log.Debug("PushWoosh Response:" + Encoding.UTF8.GetString(data, 0, data.Length));
+                                        _logger.LogInformation($"PushWoosh Response: {Encoding.UTF8.GetString(data, 0 , data.Length)}");
                                     }
                                 }
                             }
                         }
                         catch (Exception ex)
                         {
-                            log.Error(ex);
+                            _logger.LogError(ex.Message);
                         }
                     });
         }

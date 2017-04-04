@@ -5,6 +5,7 @@
 // ------------------------------------------------------------------------------------------------
 
 using Microsoft.Azure;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Photon.Turnbased;
 using Photon.Turnbased.Config;
@@ -21,14 +22,15 @@ namespace Photon.Webhooks.Turnbased.DataAccess
 
     public class Azure : IDataAccess
     {
-        private readonly CloudStorageAccount _cloudStorageAccount;
-        public Azure(string connectionString)
-        {
-            _cloudStorageAccount = CloudStorageAccount.Parse(connectionStrings);
-        }
-
         //TODO: Replace the logger here
-        private static readonly ILog Log = log4net.LogManager.GetLogger("MyLogger");
+        private readonly ILogger<Azure> _logger;
+        private readonly CloudStorageAccount _cloudStorageAccount;
+        public Azure(ILogger<Azure>logger, string connectionString)
+        {
+            _logger = logger;
+            _cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
+        }
+ 
 
         public bool StateExists(string appId, string key)
         {
@@ -37,7 +39,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
             blobClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             // Retrieve reference to container. Containers use same name rules as tables (see table name limitations).
-            var container = blobClient.GetContainerReference(string.Format("states{0}", appId.Replace("-", "")));
+            var container = blobClient.GetContainerReference($"states{appId.Replace("-", "")}");
 
             //create for demo - this call is obsolete if container is already created manually in Azure 
             container.CreateIfNotExists();
@@ -94,7 +96,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
             //Azure throws exception if file not found
             catch (StorageException)
             {
-                if (Log.IsDebugEnabled) Log.DebugFormat("StateGet, state {0}/{1} not found", appId, key);
+                _logger.LogError($"StateGet, state {appId}/{key} not found");
                 return null;
             }
         }
@@ -120,7 +122,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
             //Azure throws exception if file not found
             catch (StorageException)
             {
-                if (Log.IsDebugEnabled) Log.DebugFormat("StateDelete, state {0}/{1} not found", appId, key);
+                _logger.LogError($"StateDelete, state {appId}/{key} not found");
             }
         }
 
@@ -155,7 +157,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
             }
             catch (StorageException)
             {
-                if (Log.IsDebugEnabled) Log.DebugFormat("GameDelete, game {0}/{1}/{2} not found", appId, key, gameId);
+                _logger.LogError($"GameDelete, game {appId}/{key}/{gameId} not found");
             }
         }
 

@@ -4,30 +4,40 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Photon.Turnbased;
+using Photon.Turnbased.DataAccess;
+using ServiceStack.Logging;
 
 namespace Photon.Webhooks.Turnbased.Controllers
 {
     using System.Web.Http;
     using Models;
-    using log4net;
     using Newtonsoft.Json;
 
-    public class GameCreateController : ApiController
+    public class GameCreateController : Controller
     {
-        private static readonly ILog log = log4net.LogManager.GetLogger("MyLogger");
+        //TODO: Class contains static singleton methods, means that logger can't be used in methods. 
+        //TODO: Maybe just return the message and log or change to no static? Will need to change caller as well
+
+        private readonly ILogger<GameCreateController> _logger;
 
         #region Public Methods and Operators
 
+        public GameCreateController(ILogger<GameCreateController> logger)
+        {
+            _logger = logger;
+        }
         public dynamic Post(GameCreateRequest request, string appId)
         {
-            if (log.IsDebugEnabled) log.DebugFormat("{0} - {1}", Request.RequestUri, JsonConvert.SerializeObject(request));
 
             string message;
             if (!IsValid(request, out message))
             {
                 var errorResponse = new ErrorResponse { Message = message };
-                if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(errorResponse));
+                _logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(errorResponse)}");
                 return errorResponse;
             }
             
@@ -41,14 +51,14 @@ namespace Photon.Webhooks.Turnbased.Controllers
                 response = GameCreate(request, appId);
             }
 
-            if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(response));
+            _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(response)}");
             return response;
         }
 
         private static dynamic GameCreate(GameCreateRequest request, string appId)
         {
             dynamic response;
-            if (Startup.DataAccess.StateExists(appId, request.GameId))
+            if (DataSources.DataAccess.StateExists(appId, request.GameId))
             {
                 response = new ErrorResponse { Message = "Game already exists." };
                 return response;
@@ -56,14 +66,15 @@ namespace Photon.Webhooks.Turnbased.Controllers
 
             if (request.CreateOptions == null)
             {
-                Startup.DataAccess.StateSet(appId, request.GameId, string.Empty);
+                DataSources.DataAccess.StateSet(appId, request.GameId, string.Empty);
             }
             else
             {
-                Startup.DataAccess.StateSet(appId, request.GameId, (string)JsonConvert.SerializeObject(request.CreateOptions));
+                DataSources.DataAccess.StateSet(appId, request.GameId, (string)JsonConvert.SerializeObject(request.CreateOptions));
             }
 
             response = new OkResponse();
+            //_logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(response)}");
             return response;
         }
 
@@ -71,32 +82,31 @@ namespace Photon.Webhooks.Turnbased.Controllers
         {
             dynamic response;
             string stateJson = string.Empty;
-            stateJson = Startup.DataAccess.StateGet(appId, request.GameId);
+            stateJson = DataSources.DataAccess.StateGet(appId, request.GameId);
 
             if (!string.IsNullOrEmpty(stateJson))
             {
                 response = new GameLoadResponse { State = JsonConvert.DeserializeObject(stateJson) };
                 return response;
             }
-
             //TBD - check how deleteIfEmpty works with createifnot exists
             if (stateJson == string.Empty)
             {
-                Startup.DataAccess.StateDelete(appId, request.GameId);
-
-                if (log.IsDebugEnabled)
-                {
-                    log.DebugFormat("Deleted empty state, app id {0}, gameId {1}", appId, request.GameId);
-                }
+                DataSources.DataAccess.StateDelete(appId, request.GameId);
+                
+                //_logger.LogInformation($"Deleted empty state, app id {appId}, gameId {request.GameId}");
+        
             }
 
             if (request.CreateIfNotExists)
             {
                 response = new OkResponse();
+                //_logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(response)}");
                 return response;
             }
 
             response = new ErrorResponse { Message = "GameId not Found." };
+            //_logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(response)}");
             return response;
         }
         private static bool IsValid(GameCreateRequest request, out string message)

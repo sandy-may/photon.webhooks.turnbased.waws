@@ -4,30 +4,34 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Photon.Turnbased;
+using Photon.Turnbased.DataAccess;
 
 namespace Photon.Webhooks.Turnbased.Controllers
 {
     using System.Web.Http;
     using Models;
-    using log4net;
     using Newtonsoft.Json;
 
-    public class GameLeaveController : ApiController
+    public class GameLeaveController : Controller
     {
-        private static readonly ILog log = log4net.LogManager.GetLogger("MyLogger");
+        private readonly ILogger<GameLeaveController> _logger;
 
         #region Public Methods and Operators
-
+        public GameLeaveController(ILogger<GameLeaveController> logger)
+        {
+            _logger = logger;
+        }
         public dynamic Post(GameLeaveRequest request, string appId)
         {
-            if (log.IsDebugEnabled) log.DebugFormat("{0} - {1}", Request.RequestUri, JsonConvert.SerializeObject(request));
-
             string message;
             if (!IsValid(request, out message))
             {
                 var errorResponse = new ErrorResponse { Message = message };
-                if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(errorResponse));
+                _logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(errorResponse)}");
                 return errorResponse;
             }
 
@@ -35,16 +39,16 @@ namespace Photon.Webhooks.Turnbased.Controllers
             {
                 if (request.ActorNr > 0)
                 {
-                    Startup.DataAccess.GameInsert(appId, request.UserId, request.GameId, request.ActorNr);
+                    DataSources.DataAccess.GameInsert(appId, request.UserId, request.GameId, request.ActorNr);
                 }
             }
             else
             {
-                Startup.DataAccess.GameDelete(appId, request.UserId, request.GameId);
+                DataSources.DataAccess.GameDelete(appId, request.UserId, request.GameId);
             }
 
             var okResponse = new OkResponse();
-            if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(okResponse));
+            _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(okResponse)}");
             return okResponse;
         }
 

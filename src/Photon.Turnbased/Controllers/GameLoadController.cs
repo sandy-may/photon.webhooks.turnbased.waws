@@ -4,33 +4,38 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
 namespace Photon.Webhooks.Turnbased.Controllers
 {
     using System.Web.Http;
     using Newtonsoft.Json;
     using Models;
-    using log4net;
 
-    public class GameLoadController : ApiController
+    public class GameLoadController : Controller
     {
-        private static readonly ILog log = log4net.LogManager.GetLogger("MyLogger");
+        private readonly ILogger<GameLoadController> _logger;
 
         #region Public Methods and Operators
 
+        public GameLoadController(ILogger<GameLoadController> logger)
+        {
+            _logger = logger;
+        }
         public dynamic Post(GameCreateRequest request, string appId)
         {
-            if (log.IsDebugEnabled) log.DebugFormat("{0} - {1}", Request.RequestUri, JsonConvert.SerializeObject(request));
-
             string message;
             if (!IsValid(request, out message))
             {
                 var errorResponse = new ErrorResponse { Message = message };
-                if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(errorResponse));
+                _logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(errorResponse)}");
                 return errorResponse;
             }
 
             dynamic response = GameCreateController.GameLoad(request, appId);
-            if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(response));
+            _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(response)}");
             return response;
         }
 
@@ -52,6 +57,6 @@ namespace Photon.Webhooks.Turnbased.Controllers
             return true;
         }
 
-        #endregion
+        #endregion  
     }
 }

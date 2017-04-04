@@ -4,7 +4,13 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Photon.Turnbased;
+using Photon.Turnbased.DataAccess;
+using ServiceStack.Host;
+using ServiceStack.Logging;
 
 namespace Photon.Webhooks.Turnbased.Controllers
 {
@@ -13,50 +19,44 @@ namespace Photon.Webhooks.Turnbased.Controllers
     using System.IO;
     using System.Net;
     using System.Text;
-    using System.Web.Http;
-
     using Models;
-
-    using log4net;
-
     using Newtonsoft.Json;
-
     using Photon.Webhooks.Turnbased.PushNotifications;
-
     using ServiceStack.Text;
     
-    public class GamePropertiesController : ApiController
+    public class GamePropertiesController : Controller
     {
-        private static readonly ILog log = log4net.LogManager.GetLogger("MyLogger");
+        private readonly ILogger<GamePropertiesController> _logger;
 
         //TODO: turn this into Azure Push Notifications
-        private readonly PushWoosh pushWoosh = new PushWoosh();
+        private readonly PushWoosh pushWoosh;
 
         #region Public Methods and Operators
 
+        public GamePropertiesController(ILogger<GamePropertiesController> logger)
+        {
+            //TODO: Remove all the stuff about pushwoosh
+            _logger = logger;
+            pushWoosh = new PushWoosh(_logger);
+        }
         public dynamic Post(GamePropertiesRequest request, string appId)
         {
-            if (log.IsDebugEnabled) log.DebugFormat("{0} - {1}", Request.RequestUri, JsonConvert.SerializeObject(request));
-
             string message;
             if (!IsValid(request, out message))
             {
                 var errorResponse = new ErrorResponse { Message = message };
-                if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(errorResponse));
+                _logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(errorResponse)}");
                 return errorResponse;
             }
 
             if (request.State != null)
             {
                 var state = (string)JsonConvert.SerializeObject(request.State);
-                Startup.DataAccess.StateSet(appId, request.GameId, state);
+                DataSources.DataAccess.StateSet(appId, request.GameId, state);
 
                 var properties = request.Properties;
                 object actorNrNext = null;
-                if (properties != null)
-                {
-                    properties.TryGetValue("turn", out actorNrNext);
-                }
+                properties?.TryGetValue("turn", out actorNrNext);
                 var userNextInTurn = string.Empty;
                 foreach (var actor in request.State.ActorList)
                 {
@@ -67,7 +67,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
                             userNextInTurn = (string)actor.UserId;
                         }
                     }
-                    Startup.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
+                    DataSources.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
                 }
 
                 if (!string.IsNullOrEmpty(userNextInTurn))
@@ -82,7 +82,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
             }
 
             var response = new OkResponse();
-            if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(response));
+            _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(response)}");
             return response;
         }
 

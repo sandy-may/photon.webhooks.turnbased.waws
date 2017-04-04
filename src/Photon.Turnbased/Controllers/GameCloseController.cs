@@ -4,14 +4,19 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Photon.Turnbased;
+using Photon.Turnbased.DataAccess;
+using ServiceStack.Logging;
 
 namespace Photon.Webhooks.Turnbased.Controllers
 {
     using System.Web.Http;
     using Newtonsoft.Json;
     using Models;
-    using log4net;
+
 
     public class GameListItem
     {
@@ -19,21 +24,25 @@ namespace Photon.Webhooks.Turnbased.Controllers
         public dynamic Properties;
     }
 
-    public class GameCloseController : ApiController
+    public class GameCloseController : Controller
     {
-        private static readonly ILog log = log4net.LogManager.GetLogger("MyLogger");
+        private readonly ILogger<GameCloseController> _logger;
 
         #region Public Methods and Operators
 
+        public GameCloseController(ILogger<GameCloseController> logger)
+        {
+            _logger = logger;
+        }
+
         public dynamic Post(GameCloseRequest request, string appId)
         {
-            if (log.IsDebugEnabled) log.DebugFormat("{0} - {1}", Request.RequestUri, JsonConvert.SerializeObject(request));
 
             string message;
             if (!IsValid(request, out message))
             {
                 var errorResponse = new ErrorResponse { Message = message };
-                if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(errorResponse));
+                _logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(errorResponse)}");
                 return errorResponse;
             }
 
@@ -42,22 +51,22 @@ namespace Photon.Webhooks.Turnbased.Controllers
                 if (request.ActorCount > 0)
                 {
                     var errorResponse = new ErrorResponse { Message = "Missing State." };
-                    if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(errorResponse));
+                    _logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(errorResponse)}");
                     return errorResponse;
                 }
 
-                Startup.DataAccess.StateDelete(appId, request.GameId);
+                DataSources.DataAccess.StateDelete(appId, request.GameId);
 
                 var okResponse = new OkResponse();
-                if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(okResponse));
+                _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(okResponse)}");
                 return okResponse;
             }
 
             foreach (var actor in request.State.ActorList)
             {
                 //var listProperties = new ListProperties() { ActorNr = (int)actor.ActorNr, Properties = request.State.CustomProperties };
-                //Startup.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (string)JsonConvert.SerializeObject(listProperties));
-                Startup.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
+                //DataSources.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (string)JsonConvert.SerializeObject(listProperties));
+                DataSources.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
             }                
 
             //deprecated
@@ -65,15 +74,15 @@ namespace Photon.Webhooks.Turnbased.Controllers
             {
                 foreach (var actor in request.State2.ActorList)
                 {
-                    Startup.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
+                    DataSources.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
                 }
             }
 
             var state = (string)JsonConvert.SerializeObject(request.State);
-            Startup.DataAccess.StateSet(appId, request.GameId, state);
+            DataSources.DataAccess.StateSet(appId, request.GameId, state);
 
             var response = new OkResponse();
-            if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(response));
+            _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(response)}");
             return response;
         }
 

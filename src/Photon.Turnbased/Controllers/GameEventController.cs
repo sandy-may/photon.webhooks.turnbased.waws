@@ -4,26 +4,31 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
 namespace Photon.Webhooks.Turnbased.Controllers
 {
     using System.Web.Http;
     using Models;
-    using log4net;
     using Newtonsoft.Json;
 
 
-    public class GameEventController : ApiController
+    public class GameEventController : Controller
     {
-        private static readonly ILog log = log4net.LogManager.GetLogger("MyLogger");
+        private readonly ILogger<GameEventController> _logger;
 
+        public GameEventController(ILogger<GameEventController> logger)
+        {
+            _logger = logger;
+        }
         #region Public Methods and Operators
 
         public dynamic Post(GameEventRequest request, string appId)
         {
-            if (log.IsDebugEnabled) log.DebugFormat("{0} - {1}", Request.RequestUri, JsonConvert.SerializeObject(request));
-
             var okResponse = new OkResponse();
-            if (log.IsDebugEnabled) log.Debug(JsonConvert.SerializeObject(okResponse));
+            _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(okResponse)}");
             return okResponse;
         }
 
