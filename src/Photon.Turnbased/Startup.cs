@@ -57,7 +57,7 @@ namespace Photon.Webhooks.Turnbased
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default",
+                    name: "ApiByAppId",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
