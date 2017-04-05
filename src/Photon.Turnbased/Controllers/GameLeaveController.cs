@@ -7,13 +7,10 @@
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Photon.Turnbased;
-using Photon.Turnbased.DataAccess;
 using Photon.Webhooks.Turnbased.DataAccess;
 
 namespace Photon.Webhooks.Turnbased.Controllers
 {
-    using System.Web.Http;
     using Models;
     using Newtonsoft.Json;
 

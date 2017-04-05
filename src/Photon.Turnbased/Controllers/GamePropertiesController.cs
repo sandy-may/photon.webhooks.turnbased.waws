@@ -7,45 +7,32 @@
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Photon.Turnbased;
-using Photon.Turnbased.DataAccess;
 using Photon.Webhooks.Turnbased.DataAccess;
-using ServiceStack.Host;
-using ServiceStack.Logging;
 
 namespace Photon.Webhooks.Turnbased.Controllers
 {
-    using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Net;
-    using System.Text;
     using Models;
     using Newtonsoft.Json;
-    using Photon.Webhooks.Turnbased.PushNotifications;
-    using ServiceStack.Text;
-    
+    using PushNotifications;
+
     public class GamePropertiesController : Controller
     {
         private readonly ILogger<GamePropertiesController> _logger;
         private readonly IDataAccess _dataAccess;
-
-        //TODO: turn this into Azure Push Notifications
-        private readonly PushWoosh pushWoosh;
+        private readonly INotification _notification;
 
         #region Public Methods and Operators
 
-        public GamePropertiesController(ILogger<GamePropertiesController> logger, DataSources dataSources)
+        public GamePropertiesController(ILogger<GamePropertiesController> logger, DataSources dataSources, INotification notification)
         {
-            //TODO: Remove all the stuff about pushwoosh
             _logger = logger;
             _dataAccess = dataSources.DataAccess;
-            pushWoosh = new PushWoosh(_logger);
+            _notification = notification;
         }
         public dynamic Post(GamePropertiesRequest request, string appId)
         {
-            string message;
-            if (!IsValid(request, out message))
+            if (!IsValid(request, out string message))
             {
                 var errorResponse = new ErrorResponse { Message = message };
                 _logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(errorResponse)}");
@@ -80,7 +67,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
                                                       { "en", "{USERNAME} finished. It's your turn." },
                                                       { "de", "{USERNAME} hat seinen Zug gemacht. Du bist dran." },
                                                   };
-                    pushWoosh.RequestPushNotification(notificationContent, request.Username, "UID2", userNextInTurn, appId);
+                    _notification.SendMessage(notificationContent, request.Username, "UID2", userNextInTurn, appId);
                 }
             }
 

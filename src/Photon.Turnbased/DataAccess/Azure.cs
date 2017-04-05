@@ -4,11 +4,7 @@
 //  </copyright>
 // ------------------------------------------------------------------------------------------------
 
-using Microsoft.Azure;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Photon.Turnbased;
-using Photon.Turnbased.Config;
 
 namespace Photon.Webhooks.Turnbased.DataAccess
 {

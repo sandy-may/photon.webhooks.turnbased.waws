@@ -150,10 +150,7 @@ namespace Photon.Webhooks.Turnbased.Models
 
         public string Message { get; set; }
 
-        public int ResultCode
-        {
-            get { return (int)Models.ResultCode.Failed; }
-        }
+        public int ResultCode => (int)Models.ResultCode.Failed;
 
         #endregion
     }
@@ -162,10 +159,7 @@ namespace Photon.Webhooks.Turnbased.Models
     {
         #region Public Properties
 
-        public int ResultCode
-        {
-            get { return (int)Models.ResultCode.Ok; }
-        }
+        public int ResultCode => (int)Models.ResultCode.Ok;
 
         /// <summary>
         /// the game state as saved at game close 
@@ -184,10 +178,7 @@ namespace Photon.Webhooks.Turnbased.Models
         /// </summary>
         public Dictionary<string, object> Data { get; set; }
 
-        public int ResultCode
-        {
-            get { return (int)Models.ResultCode.Ok; }
-        }
+        public int ResultCode => (int)Models.ResultCode.Ok;
 
         #endregion
     }
@@ -196,10 +187,7 @@ namespace Photon.Webhooks.Turnbased.Models
     {
         #region Public Properties
 
-        public int ResultCode
-        {
-            get { return (int) Models.ResultCode.Ok; }
-        }
+        public int ResultCode => (int) Models.ResultCode.Ok;
 
         #endregion
         }

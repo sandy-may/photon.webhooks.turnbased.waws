@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage;
-using Photon.Turnbased.Config;
-using Photon.Turnbased.DataAccess;
+using Photon.Webhooks.Turnbased.Config;
 using Photon.Webhooks.Turnbased.DataAccess;
+using Photon.Webhooks.Turnbased.PushNotifications;
 
-namespace Photon.Turnbased
+namespace Photon.Webhooks.Turnbased
 {
     public class Startup
     {
@@ -36,6 +30,7 @@ namespace Photon.Turnbased
             services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddLogging();
+            services.AddTransient<INotification, AzureHubNotification>();
             services.AddTransient<DataSources>();
             services.AddMvc();
         }

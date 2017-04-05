@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.WindowsAzure.Storage;
-using Photon.Turnbased.Config;
-using Photon.Webhooks.Turnbased.DataAccess;
+using Photon.Webhooks.Turnbased.Config;
 
-namespace Photon.Turnbased.DataAccess
+namespace Photon.Webhooks.Turnbased.DataAccess
 {
     public class DataSources
     {
         public IDataAccess DataAccess;
-        private static CloudStorageAccount _cloudStorageAccount;
         private readonly AppSettings _appSettings;
         private readonly ConnectionStrings _connectionStrings;
 
@@ -29,7 +22,6 @@ namespace Photon.Turnbased.DataAccess
         {
             if (_appSettings.DataSource.Equals("Azure", StringComparison.OrdinalIgnoreCase))
             {
-                _cloudStorageAccount = CloudStorageAccount.Parse(_connectionStrings.AzureBlobConnectionString);
                 DataAccess = new Azure(_connectionStrings.AzureBlobConnectionString, logger);
             }
             else if (_appSettings.DataSource.Equals("Redis", StringComparison.OrdinalIgnoreCase))

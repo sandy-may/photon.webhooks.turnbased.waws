@@ -7,14 +7,10 @@
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Photon.Turnbased;
-using Photon.Turnbased.DataAccess;
 using Photon.Webhooks.Turnbased.DataAccess;
-using ServiceStack.Logging;
 
 namespace Photon.Webhooks.Turnbased.Controllers
 {
-    using System.Web.Http;
     using Models;
     using Newtonsoft.Json;
 
@@ -26,7 +22,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
         private readonly ILogger<GameCreateController> _logger;
         //TODO: cleaner way of using IDataAccess
         //Don't really like this, but it allows a static variable which this class wants for the static methods
-        protected static  IDataAccess DataAccess { get; private set; }
+        internal static  IDataAccess DataAccess { get; private set; }
 
         #region Public Methods and Operators
 
@@ -86,8 +82,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
         public static dynamic GameLoad(GameCreateRequest request, string appId)
         {
             dynamic response;
-            string stateJson = string.Empty;
-            stateJson = DataAccess.StateGet(appId, request.GameId);
+            var stateJson = DataAccess.StateGet(appId, request.GameId);
 
             if (!string.IsNullOrEmpty(stateJson))
             {

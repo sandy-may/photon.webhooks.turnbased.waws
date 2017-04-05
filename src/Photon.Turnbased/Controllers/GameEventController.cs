@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Photon.Webhooks.Turnbased.Controllers
 {
-    using System.Web.Http;
     using Models;
     using Newtonsoft.Json;
 

@@ -5,6 +5,8 @@
     <RuntimeIdentifier>win7-x86</RuntimeIdentifier>
     <ApplicationInsightsResourceId>/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourcegroups/exit-games/providers/microsoft.insights/components/Photon.Turnbased</ApplicationInsightsResourceId>
     <ApplicationInsightsAnnotationResourceId>/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourcegroups/exit-games/providers/microsoft.insights/components/Photon.Turnbased</ApplicationInsightsAnnotationResourceId>
+    <RootNamespace>Photon.Webhooks.Turnbased</RootNamespace>
+    <AssemblyName>Photon.Webhooks.Turnbased</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +25,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.1.0" />
     <PackageReference Include="Microsoft.WindowsAzure.ConfigurationManager" Version="3.2.3" />
     <PackageReference Include="ServiceStack" Version="4.5.8" />
+    <PackageReference Include="WindowsAzure.ServiceBus" Version="4.0.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="8.1.1" />
   </ItemGroup>
   <ItemGroup>
