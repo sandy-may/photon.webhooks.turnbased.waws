@@ -1,0 +1,77 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "components_Photon.Turnbased_name": {
+            "defaultValue": "Photon.Turnbased",
+            "type": "String"
+        },
+        "namespaces_TurnBased_name": {
+            "defaultValue": "TurnBased",
+            "type": "String"
+        },
+        "storageAccounts_exitgamesstore_name": {
+            "defaultValue": null 
+        },
+        "notificationHubs_pushnotification_name": {
+            "defaultValue": "TurnBased/pushnotification",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "microsoft.insights/components",
+            "kind": "web",
+            "name": "[parameters('components_Photon.Turnbased_name')]",
+            "apiVersion": "2014-04-01",
+            "location": "northeurope",
+            "tags": {},
+            "properties": {
+                "ApplicationId": "[parameters('components_Photon.Turnbased_name')]"
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.NotificationHubs/namespaces",
+            "sku": {
+                "name": "Free"
+            },
+            "kind": "NotificationHub",
+            "name": "[parameters('namespaces_TurnBased_name')]",
+            "apiVersion": "2014-09-01",
+            "location": "North Europe",
+            "tags": {},
+            "properties": {
+                "namespaceType": "NotificationHub"
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_GRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_exitgamesstore_name')]",
+            "apiVersion": "2016-01-01",
+            "location": "northeurope",
+            "tags": {},
+            "properties": {},
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.NotificationHubs/namespaces/notificationHubs",
+            "name": "[parameters('notificationHubs_pushnotification_name')]",
+            "apiVersion": "2014-09-01",
+            "location": "North Europe",
+            "properties": {
+                "authorizationRules": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.NotificationHubs/namespaces', parameters('namespaces_TurnBased_name'))]"
+            ]
+        }
+    ]
+}
