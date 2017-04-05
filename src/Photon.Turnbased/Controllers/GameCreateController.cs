@@ -30,10 +30,10 @@ namespace Photon.Webhooks.Turnbased.Controllers
 
         #region Public Methods and Operators
 
-        public GameCreateController(ILogger<GameCreateController> logger, IDataAccess dataAccess)
+        public GameCreateController(ILogger<GameCreateController> logger, DataSources dataSources)
         {
             _logger = logger;
-            DataAccess = dataAccess;
+            DataAccess = dataSources.DataAccess;
         }
         public dynamic Post(GameCreateRequest request, string appId)
         {

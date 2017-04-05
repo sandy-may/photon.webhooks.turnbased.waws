@@ -23,10 +23,10 @@ namespace Photon.Webhooks.Turnbased.Controllers
         private readonly IDataAccess _dataAccess;
 
         #region Public Methods and Operators
-        public GameLeaveController(ILogger<GameLeaveController> logger, IDataAccess dataAccess)
+        public GameLeaveController(ILogger<GameLeaveController> logger, DataSources dataSources)
         {
             _logger = logger;
-            _dataAccess = dataAccess;
+            _dataAccess = dataSources.DataAccess;
         }
         public dynamic Post(GameLeaveRequest request, string appId)
         {

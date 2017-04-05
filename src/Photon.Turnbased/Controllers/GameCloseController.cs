@@ -32,10 +32,10 @@ namespace Photon.Webhooks.Turnbased.Controllers
 
         #region Public Methods and Operators
 
-        public GameCloseController(ILogger<GameCloseController> logger, IDataAccess dataAccess)
+        public GameCloseController(ILogger<GameCloseController> logger, DataSources dataSources)
         {
             _logger = logger;
-            _dataAccess = dataAccess;
+            _dataAccess = dataSources.DataAccess;
         }
 
         public dynamic Post(GameCloseRequest request, string appId)

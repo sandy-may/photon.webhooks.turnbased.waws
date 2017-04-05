@@ -33,11 +33,10 @@ namespace Photon.Turnbased
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            var connectionStrings = Configuration.GetSection("ConnectionStrings");
-            var appSettings = Configuration.GetSection("AppSettings");
-            
-            services.Configure<ConnectionStrings>(connectionStrings);
-            services.Configure<AppSettings>(appSettings);
+            services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.AddLogging();
+            services.AddSingleton<DataSources  >();
             services.AddMvc();
         }
 

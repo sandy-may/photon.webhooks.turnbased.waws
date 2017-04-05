@@ -27,10 +27,10 @@ namespace Photon.Webhooks.Turnbased.Controllers
 
         #region Public Methods and Operators
 
-        public GetGameListController(ILogger<GetGameListController> logger, IDataAccess dataAccess)
+        public GetGameListController(ILogger<GetGameListController> logger, DataSources dataSources)
         {
             _logger = logger;
-            _dataAccess = dataAccess;
+            _dataAccess = dataSources.DataAccess;
         }
         public dynamic Post(GetGameListRequest request, string appId)
         {
@@ -48,7 +48,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
             {
                 // exists - save result in list
                 //if (DataSources.DataAccess.StateExists(appId, pair.Key))
-                var stateJson = DataSources.DataAccess.StateGet(appId, pair.Key);
+                var stateJson = _dataAccess.StateGet(appId, pair.Key);
                 if (stateJson != null)
                 {
                     dynamic customProperties = null;

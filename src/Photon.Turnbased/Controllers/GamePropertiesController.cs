@@ -35,11 +35,11 @@ namespace Photon.Webhooks.Turnbased.Controllers
 
         #region Public Methods and Operators
 
-        public GamePropertiesController(ILogger<GamePropertiesController> logger, IDataAccess dataAccess)
+        public GamePropertiesController(ILogger<GamePropertiesController> logger, DataSources dataSources)
         {
             //TODO: Remove all the stuff about pushwoosh
             _logger = logger;
-            _dataAccess = dataAccess;
+            _dataAccess = dataSources.DataAccess;
             pushWoosh = new PushWoosh(_logger);
         }
         public dynamic Post(GamePropertiesRequest request, string appId)

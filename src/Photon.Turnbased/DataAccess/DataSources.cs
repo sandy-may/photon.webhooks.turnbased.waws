@@ -13,8 +13,8 @@ namespace Photon.Turnbased.DataAccess
 {
     public class DataSources
     {
-        public static IDataAccess DataAccess;
-        public static CloudStorageAccount CloudStorageAccount;
+        public  IDataAccess DataAccess;
+        private static CloudStorageAccount _cloudStorageAccount;
         private readonly AppSettings _appSettings;
         private readonly ConnectionStrings _connectionStrings;
 
@@ -29,8 +29,8 @@ namespace Photon.Turnbased.DataAccess
         {
             if (_appSettings.DataSource.Equals("Azure", StringComparison.OrdinalIgnoreCase))
             {
-                CloudStorageAccount = CloudStorageAccount.Parse(_connectionStrings.AzureBlobConnectionString);
-                DataAccess = new Azure(logger, _connectionStrings.AzureBlobConnectionString);
+                _cloudStorageAccount = CloudStorageAccount.Parse(_connectionStrings.AzureBlobConnectionString);
+                DataAccess = new Azure(_connectionStrings.AzureBlobConnectionString, logger);
             }
             else if (_appSettings.DataSource.Equals("Redis", StringComparison.OrdinalIgnoreCase))
             {
