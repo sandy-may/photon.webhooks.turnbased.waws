@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Photon.Turnbased;
 using Photon.Turnbased.DataAccess;
+using Photon.Webhooks.Turnbased.DataAccess;
 using ServiceStack.Logging;
 
 namespace Photon.Webhooks.Turnbased.Controllers
@@ -23,12 +24,14 @@ namespace Photon.Webhooks.Turnbased.Controllers
         //TODO: Maybe just return the message and log or change to no static? Will need to change caller as well
 
         private readonly ILogger<GameCreateController> _logger;
+        private readonly IDataAccess _dataAccess;
 
         #region Public Methods and Operators
 
-        public GameCreateController(ILogger<GameCreateController> logger)
+        public GameCreateController(ILogger<GameCreateController> logger, IDataAccess dataAccess)
         {
             _logger = logger;
+            _dataAccess = dataAccess;
         }
         public dynamic Post(GameCreateRequest request, string appId)
         {
@@ -58,7 +61,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
         private static dynamic GameCreate(GameCreateRequest request, string appId)
         {
             dynamic response;
-            if (DataSources.DataAccess.StateExists(appId, request.GameId))
+            if (_dataAccess.StateExists(appId, request.GameId))
             {
                 response = new ErrorResponse { Message = "Game already exists." };
                 return response;
@@ -66,11 +69,11 @@ namespace Photon.Webhooks.Turnbased.Controllers
 
             if (request.CreateOptions == null)
             {
-                DataSources.DataAccess.StateSet(appId, request.GameId, string.Empty);
+                _dataAccess.StateSet(appId, request.GameId, string.Empty);
             }
             else
             {
-                DataSources.DataAccess.StateSet(appId, request.GameId, (string)JsonConvert.SerializeObject(request.CreateOptions));
+                _dataAccess.StateSet(appId, request.GameId, (string)JsonConvert.SerializeObject(request.CreateOptions));
             }
 
             response = new OkResponse();
@@ -82,7 +85,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
         {
             dynamic response;
             string stateJson = string.Empty;
-            stateJson = DataSources.DataAccess.StateGet(appId, request.GameId);
+            stateJson = _dataAccess.StateGet(appId, request.GameId);
 
             if (!string.IsNullOrEmpty(stateJson))
             {
@@ -92,7 +95,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
             //TBD - check how deleteIfEmpty works with createifnot exists
             if (stateJson == string.Empty)
             {
-                DataSources.DataAccess.StateDelete(appId, request.GameId);
+                _dataAccess.StateDelete(appId, request.GameId);
                 
                 //_logger.LogInformation($"Deleted empty state, app id {appId}, gameId {request.GameId}");
         

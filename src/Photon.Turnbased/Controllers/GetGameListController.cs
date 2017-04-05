@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Photon.Turnbased;
 using Photon.Turnbased.DataAccess;
+using Photon.Webhooks.Turnbased.DataAccess;
 using ServiceStack.Logging;
 
 namespace Photon.Webhooks.Turnbased.Controllers
@@ -22,12 +23,14 @@ namespace Photon.Webhooks.Turnbased.Controllers
     public class GetGameListController : Controller
     {
         private readonly ILogger<GetGameListController> _logger;
+        private readonly IDataAccess _dataAccess;
 
         #region Public Methods and Operators
 
-        public GetGameListController(ILogger<GetGameListController> logger)
+        public GetGameListController(ILogger<GetGameListController> logger, IDataAccess dataAccess)
         {
             _logger = logger;
+            _dataAccess = dataAccess;
         }
         public dynamic Post(GetGameListRequest request, string appId)
         {
@@ -41,7 +44,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
 
             var list = new Dictionary<string, object>();
 
-            foreach (var pair in DataSources.DataAccess.GameGetAll(appId, request.UserId))
+            foreach (var pair in _dataAccess.GameGetAll(appId, request.UserId))
             {
                 // exists - save result in list
                 //if (DataSources.DataAccess.StateExists(appId, pair.Key))
@@ -62,7 +65,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
                 // not exists - delete
                 else
                 {
-                    DataSources.DataAccess.GameDelete(appId, request.UserId, pair.Key);
+                    _dataAccess.GameDelete(appId, request.UserId, pair.Key);
                 }
             }
 

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Photon.Turnbased;
 using Photon.Turnbased.DataAccess;
+using Photon.Webhooks.Turnbased.DataAccess;
 using ServiceStack.Host;
 using ServiceStack.Logging;
 
@@ -27,16 +28,18 @@ namespace Photon.Webhooks.Turnbased.Controllers
     public class GamePropertiesController : Controller
     {
         private readonly ILogger<GamePropertiesController> _logger;
+        private readonly IDataAccess _dataAccess;
 
         //TODO: turn this into Azure Push Notifications
         private readonly PushWoosh pushWoosh;
 
         #region Public Methods and Operators
 
-        public GamePropertiesController(ILogger<GamePropertiesController> logger)
+        public GamePropertiesController(ILogger<GamePropertiesController> logger, IDataAccess dataAccess)
         {
             //TODO: Remove all the stuff about pushwoosh
             _logger = logger;
+            _dataAccess = dataAccess;
             pushWoosh = new PushWoosh(_logger);
         }
         public dynamic Post(GamePropertiesRequest request, string appId)
@@ -52,7 +55,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
             if (request.State != null)
             {
                 var state = (string)JsonConvert.SerializeObject(request.State);
-                DataSources.DataAccess.StateSet(appId, request.GameId, state);
+                _dataAccess.StateSet(appId, request.GameId, state);
 
                 var properties = request.Properties;
                 object actorNrNext = null;
@@ -67,7 +70,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
                             userNextInTurn = (string)actor.UserId;
                         }
                     }
-                    DataSources.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
+                    _dataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
                 }
 
                 if (!string.IsNullOrEmpty(userNextInTurn))

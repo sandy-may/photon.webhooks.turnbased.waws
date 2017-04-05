@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Photon.Turnbased;
 using Photon.Turnbased.DataAccess;
+using Photon.Webhooks.Turnbased.DataAccess;
 
 namespace Photon.Webhooks.Turnbased.Controllers
 {
@@ -19,11 +20,13 @@ namespace Photon.Webhooks.Turnbased.Controllers
     public class GameLeaveController : Controller
     {
         private readonly ILogger<GameLeaveController> _logger;
+        private readonly IDataAccess _dataAccess;
 
         #region Public Methods and Operators
-        public GameLeaveController(ILogger<GameLeaveController> logger)
+        public GameLeaveController(ILogger<GameLeaveController> logger, IDataAccess dataAccess)
         {
             _logger = logger;
+            _dataAccess = dataAccess;
         }
         public dynamic Post(GameLeaveRequest request, string appId)
         {
@@ -39,12 +42,12 @@ namespace Photon.Webhooks.Turnbased.Controllers
             {
                 if (request.ActorNr > 0)
                 {
-                    DataSources.DataAccess.GameInsert(appId, request.UserId, request.GameId, request.ActorNr);
+                    _dataAccess.GameInsert(appId, request.UserId, request.GameId, request.ActorNr);
                 }
             }
             else
             {
-                DataSources.DataAccess.GameDelete(appId, request.UserId, request.GameId);
+                    _dataAccess.GameDelete(appId, request.UserId, request.GameId);
             }
 
             var okResponse = new OkResponse();

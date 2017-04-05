@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Photon.Turnbased;
 using Photon.Turnbased.DataAccess;
+using Photon.Webhooks.Turnbased.DataAccess;
 using ServiceStack.Logging;
 
 namespace Photon.Webhooks.Turnbased.Controllers
@@ -27,12 +28,14 @@ namespace Photon.Webhooks.Turnbased.Controllers
     public class GameCloseController : Controller
     {
         private readonly ILogger<GameCloseController> _logger;
+        private readonly IDataAccess _dataAccess;
 
         #region Public Methods and Operators
 
-        public GameCloseController(ILogger<GameCloseController> logger)
+        public GameCloseController(ILogger<GameCloseController> logger, IDataAccess dataAccess)
         {
             _logger = logger;
+            _dataAccess = dataAccess;
         }
 
         public dynamic Post(GameCloseRequest request, string appId)
@@ -55,7 +58,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
                     return errorResponse;
                 }
 
-                DataSources.DataAccess.StateDelete(appId, request.GameId);
+                _dataAccess.StateDelete(appId, request.GameId);
 
                 var okResponse = new OkResponse();
                 _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(okResponse)}");
@@ -66,7 +69,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
             {
                 //var listProperties = new ListProperties() { ActorNr = (int)actor.ActorNr, Properties = request.State.CustomProperties };
                 //DataSources.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (string)JsonConvert.SerializeObject(listProperties));
-                DataSources.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
+                _dataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
             }                
 
             //deprecated
@@ -74,12 +77,12 @@ namespace Photon.Webhooks.Turnbased.Controllers
             {
                 foreach (var actor in request.State2.ActorList)
                 {
-                    DataSources.DataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
+                    _dataAccess.GameInsert(appId, (string)actor.UserId, request.GameId, (int)actor.ActorNr);
                 }
             }
 
             var state = (string)JsonConvert.SerializeObject(request.State);
-            DataSources.DataAccess.StateSet(appId, request.GameId, state);
+            _dataAccess.StateSet(appId, request.GameId, state);
 
             var response = new OkResponse();
             _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(response)}");
