@@ -36,7 +36,7 @@ namespace Photon.Turnbased
             services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddLogging();
-            services.AddSingleton<DataSources  >();
+            services.AddTransient<DataSources>();
             services.AddMvc();
         }
 

@@ -13,7 +13,7 @@ namespace Photon.Turnbased.DataAccess
 {
     public class DataSources
     {
-        public  IDataAccess DataAccess;
+        public IDataAccess DataAccess;
         private static CloudStorageAccount _cloudStorageAccount;
         private readonly AppSettings _appSettings;
         private readonly ConnectionStrings _connectionStrings;
