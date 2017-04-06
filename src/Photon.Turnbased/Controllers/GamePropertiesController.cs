@@ -31,8 +31,8 @@ namespace Photon.Webhooks.Turnbased.Controllers
             _notification = notification;
         }
 
-        [HttpPost("")]
-        public IActionResult Post(GamePropertiesRequest request, string appId)
+        [HttpPost]
+        public IActionResult Index([FromBody] GamePropertiesRequest request, string appId)
         {
             if (!IsValid(request, out string message))
             {

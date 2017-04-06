@@ -190,7 +190,7 @@ namespace Photon.Webhooks.Turnbased.Models
         public int ResultCode => (int) Models.ResultCode.Ok;
 
         #endregion
-        }
+    }
 
     #endregion
 

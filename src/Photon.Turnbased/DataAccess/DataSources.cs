@@ -7,7 +7,7 @@ namespace Photon.Webhooks.Turnbased.DataAccess
 {
     public class DataSources
     {
-        public IDataAccess DataAccess;
+        public IDataAccess DataAccess { get; private set; }
         private readonly AppSettings _appSettings;
         private readonly ConnectionStrings _connectionStrings;
 

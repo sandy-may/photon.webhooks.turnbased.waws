@@ -32,8 +32,8 @@ namespace Photon.Webhooks.Turnbased.Controllers
             DataAccess = dataSources.DataAccess;
         }
 
-        [HttpPost("")]
-        public IActionResult Post(GameCreateRequest request, string appId)
+        [HttpPost]
+        public IActionResult Index([FromBody] GameCreateRequest request, string appId)
         {
 
             if (!IsValid(request, out string message))
@@ -57,7 +57,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
             return Ok(response);
         }
 
-        private static dynamic GameCreate(GameCreateRequest request, string appId)
+        private static IActionResult GameCreate(GameCreateRequest request, string appId)
         {
             dynamic response;
             if (DataAccess.StateExists(appId, request.GameId))
@@ -80,7 +80,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
             return response;
         }
 
-        public static dynamic GameLoad(GameCreateRequest request, string appId)
+        public static IActionResult GameLoad(GameCreateRequest request, string appId)
         {
             dynamic response;
             var stateJson = DataAccess.StateGet(appId, request.GameId);

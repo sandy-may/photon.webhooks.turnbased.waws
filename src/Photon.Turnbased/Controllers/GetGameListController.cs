@@ -29,8 +29,8 @@ namespace Photon.Webhooks.Turnbased.Controllers
             _dataAccess = dataSources.DataAccess;
         }
 
-        [HttpPost("")]
-        public IActionResult Post(GetGameListRequest request, string appId)
+        [HttpPost]
+        public IActionResult Index([FromBody] GetGameListRequest request, string appId)
         {
             string message;
             if (!IsValid(request, out message))

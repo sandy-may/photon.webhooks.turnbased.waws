@@ -11,7 +11,6 @@ namespace Photon.Webhooks.Turnbased.DataAccess
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
 
@@ -32,7 +31,6 @@ namespace Photon.Webhooks.Turnbased.DataAccess
         {
             // Create the blob client.
             var blobClient = _cloudStorageAccount.CreateCloudBlobClient();
-            blobClient.AuthenticationScheme = AuthenticationScheme.SharedKeyLite;
 
             // Retrieve reference to container. Containers use same name rules as tables (see table name limitations).
             var container = blobClient.GetContainerReference($"states{appId.Replace("-", "")}");
