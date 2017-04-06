@@ -24,11 +24,12 @@ namespace Photon.Webhooks.Turnbased.Controllers
         }
         #region Public Methods and Operators
 
-        public dynamic Post(GameEventRequest request, string appId)
+        [HttpPost("")]
+        public IActionResult Post(GameEventRequest request, string appId)
         {
             var okResponse = new OkResponse();
             _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(okResponse)}");
-            return okResponse;
+            return Ok(okResponse);
         }
 
         #endregion

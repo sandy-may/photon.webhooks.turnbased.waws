@@ -30,13 +30,15 @@ namespace Photon.Webhooks.Turnbased.Controllers
             _dataAccess = dataSources.DataAccess;
             _notification = notification;
         }
-        public dynamic Post(GamePropertiesRequest request, string appId)
+
+        [HttpPost("")]
+        public IActionResult Post(GamePropertiesRequest request, string appId)
         {
             if (!IsValid(request, out string message))
             {
                 var errorResponse = new ErrorResponse { Message = message };
                 _logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(errorResponse)}");
-                return errorResponse;
+                return BadRequest(errorResponse);
             }
 
             if (request.State != null)
@@ -73,7 +75,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
 
             var response = new OkResponse();
             _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(response)}");
-            return response;
+            return Ok(response);
         }
 
 

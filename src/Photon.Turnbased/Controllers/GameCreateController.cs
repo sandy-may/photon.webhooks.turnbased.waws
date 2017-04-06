@@ -31,17 +31,18 @@ namespace Photon.Webhooks.Turnbased.Controllers
             _logger = logger;
             DataAccess = dataSources.DataAccess;
         }
-        public dynamic Post(GameCreateRequest request, string appId)
+
+        [HttpPost("")]
+        public IActionResult Post(GameCreateRequest request, string appId)
         {
 
-            string message;
-            if (!IsValid(request, out message))
+            if (!IsValid(request, out string message))
             {
                 var errorResponse = new ErrorResponse { Message = message };
                 _logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(errorResponse)}");
-                return errorResponse;
+                return BadRequest(errorResponse);
             }
-            
+
             dynamic response;
             if (!string.IsNullOrEmpty(request.Type) && request.Type == "Load")
             {
@@ -53,7 +54,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
             }
 
             _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(response)}");
-            return response;
+            return Ok(response);
         }
 
         private static dynamic GameCreate(GameCreateRequest request, string appId)

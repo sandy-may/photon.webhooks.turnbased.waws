@@ -25,14 +25,15 @@ namespace Photon.Webhooks.Turnbased.Controllers
             _logger = logger;
             _dataAccess = dataSources.DataAccess;
         }
-        public dynamic Post(GameLeaveRequest request, string appId)
+
+        [HttpPost("")]
+        public IActionResult Post(GameLeaveRequest request, string appId)
         {
-            string message;
-            if (!IsValid(request, out message))
+            if (!IsValid(request, out string message))
             {
                 var errorResponse = new ErrorResponse { Message = message };
                 _logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(errorResponse)}");
-                return errorResponse;
+                return BadRequest(errorResponse);
             }
 
             if (request.IsInactive)
@@ -49,7 +50,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
 
             var okResponse = new OkResponse();
             _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(okResponse)}");
-            return okResponse;
+            return Ok(okResponse);
         }
 
         private static bool IsValid(GameLeaveRequest request, out string message)

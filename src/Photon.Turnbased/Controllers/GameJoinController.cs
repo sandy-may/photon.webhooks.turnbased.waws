@@ -25,11 +25,12 @@ namespace Photon.Webhooks.Turnbased.Controllers
 
         #region Public Methods and Operators
 
-        public dynamic Post(GameLeaveRequest request, string appId)
+        [HttpPost("")]
+        public IActionResult Post(GameLeaveRequest request, string appId)
         {
             var response = new OkResponse();
             _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(response)}");
-            return response;
+            return Ok(response);
         }
 
         #endregion

@@ -34,15 +34,15 @@ namespace Photon.Webhooks.Turnbased.Controllers
             _dataAccess = dataSources.DataAccess;
         }
 
-        public dynamic Post(GameCloseRequest request, string appId)
+        [HttpPost("")]
+        public IActionResult Post(GameCloseRequest request, string appId)
         {
 
-            string message;
-            if (!IsValid(request, out message))
+            if (!IsValid(request, out string message))
             {
                 var errorResponse = new ErrorResponse { Message = message };
                 _logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(errorResponse)}");
-                return errorResponse;
+                return BadRequest(errorResponse);
             }
 
             if (request.State == null)
@@ -51,14 +51,14 @@ namespace Photon.Webhooks.Turnbased.Controllers
                 {
                     var errorResponse = new ErrorResponse { Message = "Missing State." };
                     _logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(errorResponse)}");
-                    return errorResponse;
+                    return BadRequest(errorResponse);
                 }
 
                 _dataAccess.StateDelete(appId, request.GameId);
 
                 var okResponse = new OkResponse();
                 _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(okResponse)}");
-                return okResponse;
+                return Ok(okResponse);
             }
 
             foreach (var actor in request.State.ActorList)
@@ -82,7 +82,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
 
             var response = new OkResponse();
             _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(response)}");
-            return response;
+            return Ok(response);
         }
 
         private static bool IsValid(GameCloseRequest request, out string message)

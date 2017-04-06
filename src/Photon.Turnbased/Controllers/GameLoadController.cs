@@ -23,19 +23,21 @@ namespace Photon.Webhooks.Turnbased.Controllers
         {
             _logger = logger;
         }
-        public dynamic Post(GameCreateRequest request, string appId)
+
+        [HttpPost("")]
+        public IActionResult Post(GameCreateRequest request, string appId)
         {
             string message;
             if (!IsValid(request, out message))
             {
                 var errorResponse = new ErrorResponse { Message = message };
                 _logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(errorResponse)}");
-                return errorResponse;
+                return BadRequest(errorResponse);
             }
 
-            dynamic response = GameCreateController.GameLoad(request, appId);
+            var response = GameCreateController.GameLoad(request, appId);
             _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(response)}");
-            return response;
+            return Ok(response);
         }
 
         private static bool IsValid(GameCreateRequest request, out string message)

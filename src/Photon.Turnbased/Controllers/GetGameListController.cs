@@ -8,6 +8,7 @@ using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Photon.Webhooks.Turnbased.DataAccess;
+using ServiceStack;
 
 namespace Photon.Webhooks.Turnbased.Controllers
 {
@@ -27,14 +28,16 @@ namespace Photon.Webhooks.Turnbased.Controllers
             _logger = logger;
             _dataAccess = dataSources.DataAccess;
         }
-        public dynamic Post(GetGameListRequest request, string appId)
+
+        [HttpPost("")]
+        public IActionResult Post(GetGameListRequest request, string appId)
         {
             string message;
             if (!IsValid(request, out message))
             {
                 var errorResponse = new ErrorResponse { Message = message };
                 _logger.LogError($"{Request.GetUri()} - {JsonConvert.SerializeObject(errorResponse)}");
-                return errorResponse;
+                return BadRequest(errorResponse);
             }
 
             var list = new Dictionary<string, object>();
@@ -66,7 +69,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
 
             var getGameListResponse = new GetGameListResponse { Data = list };
             _logger.LogInformation($"{Request.GetUri()} - {JsonConvert.SerializeObject(getGameListResponse)}");
-            return getGameListResponse;
+            return Ok(getGameListResponse);
         }
 
         private static bool IsValid(GetGameListRequest request, out string message)
