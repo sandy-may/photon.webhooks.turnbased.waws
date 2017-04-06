@@ -12,23 +12,23 @@ namespace Photon.Webhooks.Turnbased.PushNotifications
 {
     public class AzureHubNotification : INotification
     {
-        internal static ILogger<AzureHubNotification> Logger { get; private set; }
-        internal static ConnectionStrings ConnectionStrings { get; private set; }
+        private readonly ILogger<AzureHubNotification> _logger;
+        private readonly ConnectionStrings _connectionStrings;
         private const string Topic = "turnbasedNotify";
 
         public AzureHubNotification(ILogger<AzureHubNotification> logger, IOptions<ConnectionStrings> connectionStrings)
         {
-            Logger = logger;
-            ConnectionStrings = connectionStrings.Value;
+            _logger = logger;
+            _connectionStrings = connectionStrings.Value;
             CreateTopic(); 
         }
 
-        private static async void CreateTopic()
+        private async void CreateTopic()
         {
             try
             {
                 var namespaceManager =
-                    NamespaceManager.CreateFromConnectionString(ConnectionStrings.NotificationHubConnectionString);
+                    NamespaceManager.CreateFromConnectionString(_connectionStrings.NotificationHubConnectionString);
                 if (!await namespaceManager.TopicExistsAsync(Topic))
                 {
                     await namespaceManager.CreateTopicAsync(Topic);
@@ -36,21 +36,22 @@ namespace Photon.Webhooks.Turnbased.PushNotifications
             }
             catch (Exception e)
             {
-                Logger.LogError($"Execption caught creating service bus topic - {e}");
+                _logger.LogError($"Execption caught creating service bus topic - {e}");
             }
 
         }
+
 
         public async Task SendMessage(Dictionary<string, string> notificationContent, string username, string usertag, string target, string appid)
         {
             TopicClient client;
             try
             {
-                client = TopicClient.CreateFromConnectionString(ConnectionStrings.NotificationHubConnectionString, Topic);
+                client = TopicClient.CreateFromConnectionString(_connectionStrings.NotificationHubConnectionString, Topic);
             }
             catch (Exception e)
             {
-                Logger.LogError($"Execption caught creating service bus topic client - {e}");
+                _logger.LogError($"Execption caught creating service bus topic client - {e}");
                 return;
             }
 

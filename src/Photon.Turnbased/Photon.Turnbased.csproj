@@ -12,6 +12,10 @@
   <ItemGroup>
     <Compile Remove="DataAccess\Redis.cs" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Properties\PublishProfiles\PhotonTurnbased-WebAPI - Web Deploy.pubxml" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.3" />
@@ -38,6 +42,7 @@
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
