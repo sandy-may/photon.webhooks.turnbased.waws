@@ -14,7 +14,7 @@ namespace Photon.Webhooks.Turnbased.PushNotifications
     {
         private readonly ILogger<AzureHubNotification> _logger;
         private readonly ConnectionStrings _connectionStrings;
-        private const string Topic = "turnbasedNotify";
+        //private readonly TopicDescription td = new TopicDescription("turnbasednotify");
 
         public AzureHubNotification(ILogger<AzureHubNotification> logger, IOptions<ConnectionStrings> connectionStrings)
         {
@@ -23,15 +23,18 @@ namespace Photon.Webhooks.Turnbased.PushNotifications
             CreateTopic(); 
         }
 
-        private async void CreateTopic()
+        private void CreateTopic()
         {
             try
             {
+                //td.MaxSizeInMegabytes = 5120;
+                //td.DefaultMessageTimeToLive = new TimeSpan(0 , 1, 0);
+                //TODO: fix error 401 when creating a topic
                 var namespaceManager =
                     NamespaceManager.CreateFromConnectionString(_connectionStrings.NotificationHubConnectionString);
-                if (!await namespaceManager.TopicExistsAsync(Topic))
+                if (!namespaceManager.TopicExists("topic"))
                 {
-                    await namespaceManager.CreateTopicAsync(Topic);
+                    namespaceManager.CreateTopic("topic");
                 }
             }
             catch (Exception e)
@@ -47,7 +50,7 @@ namespace Photon.Webhooks.Turnbased.PushNotifications
             TopicClient client;
             try
             {
-                client = TopicClient.CreateFromConnectionString(_connectionStrings.NotificationHubConnectionString, Topic);
+                client = TopicClient.CreateFromConnectionString(_connectionStrings.NotificationHubConnectionString, "topic");
             }
             catch (Exception e)
             {
