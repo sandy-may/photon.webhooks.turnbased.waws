@@ -1,0 +1,189 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "alertrules_Failure_Anomalies___Photon.Turnbased_name": {
+            "defaultValue": "Failure Anomalies - Photon.Turnbased",
+            "type": "String"
+        },
+        "components_Photon.Turnbased_name": {
+            "defaultValue": "Photon.Turnbased",
+            "type": "String"
+        },
+        "namespaces_TurnBased_name": {
+            "defaultValue": "TurnBased",
+            "type": "String"
+        },
+        "storageAccounts_exitgamesstore_name": {
+            "defaultValue": "exitgamesstore",
+            "type": "String"
+        },
+        "serverfarms_PhotonTurnbased_name": {
+            "defaultValue": "PhotonTurnbased",
+            "type": "String"
+        },
+        "sites_PhotonTurnbased_API_name": {
+            "defaultValue": "PhotonTurnbased-API",
+            "type": "String"
+        },
+        "notificationHubs_pushnotification_name": {
+            "defaultValue": "TurnBased/pushnotification",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "comments": "Generalized from resource: '/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourceGroups/exit-games/providers/microsoft.insights/alertrules/Failure Anomalies - Photon.Turnbased'.",
+            "type": "microsoft.insights/alertrules",
+            "name": "[parameters('alertrules_Failure_Anomalies___Photon.Turnbased_name')]",
+            "apiVersion": "2014-04-01",
+            "location": "North Europe",
+            "tags": {
+                "hidden-link:/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourcegroups/exit-games/providers/microsoft.insights/components/Photon.Turnbased": "Resource"
+            },
+            "properties": {
+                "name": "[parameters('alertrules_Failure_Anomalies___Photon.Turnbased_name')]",
+                "description": "",
+                "isEnabled": true,
+                "condition": {
+                    "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
+                    "dataSource": {
+                        "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
+                        "resourceUri": "[resourceId('microsoft.insights/components', parameters('components_Photon.Turnbased_name'))]",
+                        "metricName": "advanced::A3108E3D-5E26-44CF-B232-783F5E20EF10::ewAiAEgAeQBwAGUAcgBpAG8AbgBBAHAAcABsAGkAYwBhAHQAaQBvAG4AUwBpAGQAIgA6AG4AdQBsAGwALAAiAEgAeQBwAGUAcgBpAG8AbgBTAHUAYgBqAGUAYwB0AFMAaQBkACIAOgBuAHUAbABsACwAIgBIAHkAcABlAHIAaQBvAG4ATwBiAHMAZQByAHYAZQByAFMAaQBkACIAOgBuAHUAbABsACwAIgBDAHUAcwB0AG8AbQBlAHIAQQBjAGMAbwB1AG4AdABJAGQAIgA6ACIAMAAwADAAMAAwADAAMAAwAC0AMAAwADAAMAAtADAAMAAwADAALQAwADAAMAAwAC0AMAAwADAAMAAwADAAMAAwADAAMAAwADAAIgAsACIAQQBwAHAAbABpAGMAYQB0AGkAbwBuAE4AYQBtAGUAIgA6AG4AdQBsAGwALAAiAEEAcABwAGwAaQBjAGEAdABpAG8AbgBJAGQAIgA6AG4AdQBsAGwALAAiAFAAcgBvAGYAaQBsAGUASQBkACIAOgAwACwAIgBXAGkAbgBkAG8AdwBTAGkAegBlAEkAbgBNAGkAbgB1AHQAZQBzACIAOgA2ADAALAAiAE0AZQB0AHIAaQBjAE4AYQBtAGUAIgA6ACIAIgAsACIAVABoAHIAZQBzAGgAbwBsAGQAIgA6ADIALgAwACwAIgBBAGwAZQByAHQAVABlAG0AcABsAGEAdABlAEkAZAAiADoAIgAiACwAIgBSAHUAbABlAEkAZAAiADoAIgAiACwAIgBSAHUAbABlAE4AYQBtAGUAIgA6ACIAIgAsACIAUgB1AGwAZQBEAGUAcwBjAHIAaQBwAHQAaQBvAG4AIgA6ACIAIgAsACIAUgBlAHMAbwB1AHIAYwBlAEkAZAAiADoAbgB1AGwAbAAsACIAUwB1AGIAcwBjAHIAaQBwAHQAaQBvAG4ASQBkACIAOgBuAHUAbABsACwAIgBBAGcAZwByAGUAZwBhAHQAZQBGAHUAbgBjAHQAaQBvAG4AIgA6ACIAIgAsACIAQwBvAG0AcABhAHIAaQBzAG8AbgBPAHAAZQByAGEAdABvAHIAIgA6ACIAewBcACIAQgBhAHMAZQBsAGkAbgBlAFQAaQBtAGUAcwBwAGEAbgBcACIAOgBcACIAMAAwADoANAAwADoAMAAwAFwAIgAsAFwAIgBJAG4AcwBpAGcAaAB0AHMAUwBlAHIAdgBpAGMAZQBMAGEAZwBcACIAOgBcACIAMAAwADoAMAAwADoAMAAwAFwAIgAsAFwAIgBCAHUAZgBmAGUAcgBUAGkAbQBlAFwAIgA6AFwAIgAwADAAOgAwADEAOgAwADAAXAAiACwAXAAiAEIAbABvAGIAUwB0AG8AcgBhAGcAZQBMAG8AZwBnAGkAbgBnAEUAbgBhAGIAbABlAGQAXAAiADoAZgBhAGwAcwBlACwAXAAiAFUAcwBlAHIAUwB1AHAAcAByAGUAcwBzAGkAbwBuAHMAXAAiADoAbgB1AGwAbAAsAFwAIgBQAHIAbwBmAGkAbABlAEkAZABcACIAOgAwACwAXAAiAEUAbQBhAGkAbABUAHkAcABlAFwAIgA6ADAALABcACIAUgBkAGQARgBhAGkAbAB1AHIAZQBzAFMAcABpAGsAZQBUAGgAcgBlAHMAaABvAGwAZABcACIAOgAzAC4AMAAsAFwAIgBSAGEAdwBQAHIAbwBhAGMAdABpAHYAZQBSAHUAbABlAEMAbwBuAGYAaQBnAFwAIgA6AG4AdQBsAGwAfQAiACwAIgBFAG4AYQBiAGwAZQBTAGUAbgBkAEUAbQBhAGkAbABUAG8AQwB1AHMAdABvAG0AIgA6AGYAYQBsAHMAZQAsACIAQwB1AHMAdABvAG0ARQBtAGEAaQBsAHMARQBuAGMAbwBkAGUAZAAiADoAIgAiACwAIgBFAG4AYQBiAGwAZQBTAGUAbgBkAEUAbQBhAGkAbABUAG8ATwB3AG4AZQByAHMAIgA6AGYAYQBsAHMAZQB9AA=="
+                    },
+                    "threshold": 2,
+                    "windowSize": "PT1H"
+                },
+                "action": {
+                    "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
+                    "sendToServiceOwners": true,
+                    "customEmails": []
+                }
+            },
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_Photon.Turnbased_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourceGroups/exit-games/providers/microsoft.insights/components/Photon.Turnbased'.",
+            "type": "microsoft.insights/components",
+            "kind": "web",
+            "name": "[parameters('components_Photon.Turnbased_name')]",
+            "apiVersion": "2014-04-01",
+            "location": "northeurope",
+            "tags": {
+                "hidden-link:/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourceGroups/exit-games/providers/Microsoft.Web/sites/PhotonTurnbased-sandy": "Resource",
+                "hidden-link:/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourceGroups/exit-games/providers/Microsoft.Web/sites/PhotonTurnbased-API": "Resource"
+            },
+            "properties": {
+                "ApplicationId": "[parameters('components_Photon.Turnbased_name')]"
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourcegroups/exit-games/providers/Microsoft.NotificationHubs/namespaces/TurnBased'.",
+            "type": "Microsoft.NotificationHubs/namespaces",
+            "sku": {
+                "name": "Free"
+            },
+            "kind": "NotificationHub",
+            "name": "[parameters('namespaces_TurnBased_name')]",
+            "apiVersion": "2014-09-01",
+            "location": "North Europe",
+            "tags": {},
+            "properties": {
+                "namespaceType": "NotificationHub"
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourceGroups/exit-games/providers/Microsoft.Storage/storageAccounts/exitgamesstore'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_GRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_exitgamesstore_name')]",
+            "apiVersion": "2016-01-01",
+            "location": "northeurope",
+            "tags": {},
+            "properties": {},
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourceGroups/exit-games/providers/Microsoft.Web/serverfarms/PhotonTurnbased'.",
+            "type": "Microsoft.Web/serverfarms",
+            "sku": {
+                "name": "S1",
+                "tier": "Standard",
+                "size": "S1",
+                "family": "S",
+                "capacity": 1
+            },
+            "kind": "app",
+            "name": "[parameters('serverfarms_PhotonTurnbased_name')]",
+            "apiVersion": "2015-08-01",
+            "location": "North Europe",
+            "properties": {
+                "name": "[parameters('serverfarms_PhotonTurnbased_name')]",
+                "numberOfWorkers": 1
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourceGroups/exit-games/providers/Microsoft.Web/sites/PhotonTurnbased-API'.",
+            "type": "Microsoft.Web/sites",
+            "kind": "apiapp",
+            "name": "[parameters('sites_PhotonTurnbased_API_name')]",
+            "apiVersion": "2015-08-01",
+            "location": "North Europe",
+            "tags": {
+                "hidden-related:/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourceGroups/exit-games/providers/Microsoft.Web/serverfarms/PhotonTurnbased": "empty"
+            },
+            "properties": {
+                "name": "[parameters('sites_PhotonTurnbased_API_name')]",
+                "hostNames": [
+                    "photonturnbased-api.azurewebsites.net"
+                ],
+                "enabledHostNames": [
+                    "photonturnbased-api.azurewebsites.net",
+                    "photonturnbased-api.scm.azurewebsites.net"
+                ],
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('sites_PhotonTurnbased_API_name'),'photonturnbased-api.azurewebsites.net')]",
+                        "sslState": 0,
+                        "thumbprint": null,
+                        "ipBasedSslState": 0
+                    },
+                    {
+                        "name": "[concat(parameters('sites_PhotonTurnbased_API_name'),'photonturnbased-api.scm.azurewebsites.net')]",
+                        "sslState": 0,
+                        "thumbprint": null,
+                        "ipBasedSslState": 0
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_PhotonTurnbased_name'))]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_PhotonTurnbased_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourcegroups/exit-games/providers/Microsoft.NotificationHubs/namespaces/TurnBased/notificationHubs/pushnotification'.",
+            "type": "Microsoft.NotificationHubs/namespaces/notificationHubs",
+            "name": "[parameters('notificationHubs_pushnotification_name')]",
+            "apiVersion": "2014-09-01",
+            "location": "North Europe",
+            "properties": {
+                "authorizationRules": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.NotificationHubs/namespaces', parameters('namespaces_TurnBased_name'))]"
+            ]
+        }
+    ]
+}

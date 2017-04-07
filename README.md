@@ -54,10 +54,9 @@ Use the Microsoft Azure Pass to sign up at [www.windowsazurepass.com](www.window
 
 ## Next Steps ##
 
-### Publish to Azure Websites ###
+### Publish to Azure ###
 
-- Create an [Microsoft Azure Websites account](http://aka.ms/exitgames_azure), create a website, load down a publisher profile and publish the side to Azure Websites. Don't forget to change the Redis settings to point to your Redis server (you can use your local server by forwarding the corresponding port with ngrok to your PC)
-- adjust the base url in the Photon Dashboard
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
 
 
 ### Modify the webhooks logic ###
