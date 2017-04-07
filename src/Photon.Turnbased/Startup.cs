@@ -46,7 +46,7 @@ namespace Photon.Webhooks.Turnbased
             {
                 routes.MapRoute(
                     name: "ApiByAppId",
-                    template: "{controller=Home}/{action=Index}/{id}");
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
