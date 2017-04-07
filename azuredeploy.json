@@ -138,26 +138,25 @@
       "apiVersion": "2015-08-01",
       "location": "North Europe",
       "tags": {
-        "hidden-related:/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourceGroups/exit-games/providers/Microsoft.Web/serverfarms/PhotonTurnbased": "empty"
       },
       "properties": {
         "name": "[parameters('sites_PhotonTurnbased_API_name')]",
         "hostNames": [
-          "photonturnbased-api.azurewebsites.net"
+          "[concat(parameters('sites_PhotonTurnbased_API_name'), '.azurewebsites.net')]"
         ],
         "enabledHostNames": [
-          "photonturnbased-api.azurewebsites.net",
-          "photonturnbased-api.scm.azurewebsites.net"
+          "[concat(parameters('sites_PhotonTurnbased_API_name'), '.azurewebsites.net')]",
+          "[concat(parameters('sites_PhotonTurnbased_API_name'), '.scm.azurewebsites.net')]"
         ],
         "hostNameSslStates": [
           {
-            "name": "[concat(parameters('sites_PhotonTurnbased_API_name'),'photonturnbased-api.azurewebsites.net')]",
+            "name": "[concat(parameters('sites_PhotonTurnbased_API_name'),'.azurewebsites.net')]",
             "sslState": 0,
             "thumbprint": null,
             "ipBasedSslState": 0
           },
           {
-            "name": "[concat(parameters('sites_PhotonTurnbased_API_name'),'photonturnbased-api.scm.azurewebsites.net')]",
+            "name": "[concat(parameters('sites_PhotonTurnbased_API_name'),'.scm.azurewebsites.net')]",
             "sslState": 0,
             "thumbprint": null,
             "ipBasedSslState": 0
