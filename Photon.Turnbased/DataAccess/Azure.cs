@@ -17,7 +17,6 @@ namespace Photon.Webhooks.Turnbased.DataAccess
 
     public class Azure : IDataAccess
     {
-        //TODO: Replace the logger here
         private readonly ILogger<Azure> _logger;
         private readonly CloudStorageAccount _cloudStorageAccount;
         public Azure(string connectionString, ILogger<Azure> logger)
