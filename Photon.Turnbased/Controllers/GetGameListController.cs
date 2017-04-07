@@ -30,7 +30,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index([FromBody] GetGameListRequest request, [FromHeader] string appId)
+        public IActionResult Index([FromBody] GetGameListRequest request, string appId)
         {
             string message;
             if (!IsValid(request, out message))

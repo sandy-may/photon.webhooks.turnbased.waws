@@ -35,7 +35,7 @@ namespace Photon.Webhooks.Turnbased.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index([FromBody] GameCloseRequest request, [FromHeader] string appId)
+        public IActionResult Index([FromBody] GameCloseRequest request, string appId)
         {
 
             if (!IsValid(request, out string message))
