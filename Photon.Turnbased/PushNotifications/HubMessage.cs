@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Microsoft.Azure.NotificationHubs;
-using Microsoft.Azure.NotificationHubs;
+
 namespace Photon.Webhooks.Turnbased.PushNotifications
 {
     public static class HubMessage
     {
-        public static TemplateNotification WrapMessage(Dictionary<string, string> notificationContent, string username, string usertag,
+        public static string WrapMessage(Dictionary<string, string> notificationContent, string username, string usertag,
             string target, string appid)
         {
             var conditions = new List<IList<string>>
@@ -31,18 +30,18 @@ namespace Photon.Webhooks.Turnbased.PushNotifications
                     Content = content,
                 }
             };
-            var request = new Dictionary<string, string>
+            var request = new Dictionary<string, HubRequest>
             {
                 {
                     "request",
-                    JsonConvert.SerializeObject(new HubRequest
+                    new HubRequest
                     {
                         Notifications = notifications,
                         Conditions = conditions,
-                    })
+                    }
                 }
             };
-            return new TemplateNotification(request);
+            return JsonConvert.SerializeObject(request);
         }
     }
 }
