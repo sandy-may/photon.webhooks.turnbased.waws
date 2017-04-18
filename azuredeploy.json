@@ -99,6 +99,19 @@
       "dependsOn": []
     },
     {
+      "comments": "Generalized from resource: '/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourcegroups/exit-games/providers/Microsoft.NotificationHubs/namespaces/TurnBased/notificationHubs/pushnotification'.",
+      "type": "Microsoft.NotificationHubs/namespaces/notificationHubs",
+      "name": "[parameters('notificationHubs_pushnotification_name')]",
+      "apiVersion": "2014-09-01",
+      "location": "North Europe",
+      "properties": {
+        "authorizationRules": []
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.NotificationHubs/namespaces', parameters('namespaces_TurnBased_name'))]"
+      ]
+    },
+    {
       "comments": "Generalized from resource: '/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourceGroups/exit-games/providers/Microsoft.Web/sites/PhotonTurnbased-API'.",
       "type": "Microsoft.Web/sites",
       "kind": "apiapp",
@@ -142,7 +155,7 @@
               "connectionString": "[listKeys(resourceId('Microsoft.NotificationHubs/namespaces/notificationHubs/authorizationRules', parameters('namespaces_TurnBased_name'), parameters('notificationHubs_pushnotification_name'), 'DefaultFullSharedAccessSignature'), providers('Microsoft.NotificationHubs', 'namespaces/notificationHubs').apiVersions[0]).primaryConnectionString]"
             }
           ]
-        } 
+        }
       },
       "resources": [
         {
@@ -161,19 +174,6 @@
       ],
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_PhotonTurnbased_name'))]"
-      ]
-    },
-    {
-      "comments": "Generalized from resource: '/subscriptions/5afd17a6-6931-4828-9db5-7fd7b81d0b8f/resourcegroups/exit-games/providers/Microsoft.NotificationHubs/namespaces/TurnBased/notificationHubs/pushnotification'.",
-      "type": "Microsoft.NotificationHubs/namespaces/notificationHubs",
-      "name": "[parameters('notificationHubs_pushnotification_name')]",
-      "apiVersion": "2014-09-01",
-      "location": "North Europe",
-      "properties": {
-        "authorizationRules": []
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.NotificationHubs/namespaces', parameters('namespaces_TurnBased_name'))]"
       ]
     }
   ]
