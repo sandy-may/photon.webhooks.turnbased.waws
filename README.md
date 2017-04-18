@@ -8,27 +8,15 @@ This is the **Photon Turnbased Webhooks** sample using [Azure Websites](http://w
 ## Requirements
 
 - [Photon Account for Turnbased](https://www.exitgames.com/en/Turnbased)
-- Windows with IIS (Internet Information Service) feature enabled
-- Visual Studio 2013
+- Windows with IIS (Internet Information Service) [feature enabled](https://msdn.microsoft.com/en-GB/library/ms181052(v=vs.80).aspx)
+- [Visual Studio 2017](https://www.visualstudio.com/downloads/)
 - [ngrok](https://ngrok.com/) to forward requests to your PC
-
-
-### Option 1: Azure Storage
-
-- Azure Account: It is free (but you need to enter a Credit Card)
-- Azure Storage: Create a "STORAGE" > Quick Create (enter Name and Region)
-
-
-### Option 2: Redis
-- local [Redis](http://redis.io/download)
 
 
 ## Set this project up for free now! Check out all the possibilities of Microsoft Azure!
 
 Sign up for your free trial month of Microsoft Azure now and get USD 200 / EURO 150 to spend on all(!) Azure services you like to try out – without any further obligation!  
 You’ll get the full power from the Cloud and you can choose yourself, how to spend your balance!
-
-**[http://aka.ms/exitgames_azure](http://aka.ms/exitgames_azure)**
  
 For authentification purposes you’ll need a credit card to sign up.
 Without a credit card request a free Microsoft Azure Pass simply by sending a short note to [azurenow@microsoft.com](azurenow@microsoft.com).
@@ -38,14 +26,10 @@ Use the Microsoft Azure Pass to sign up at [www.windowsazurepass.com](www.window
 ## Run it locally
 
 - Open the sample running Visual Studio as administrator and build the project (admin privileges are required because a virtual directory is used).
-- *Option 1: Azure Storage*, web.config `<add key="DataAccess" value="Azure"/>`
+- Azure Storage*, web.config `<add key="DataAccess" value="Azure"/>`
   - Select the Azure Storage > Manage Access Keys (copy paste into the config)
   - set `<add key="AzureAccountName" value="" />`
   - set `<add key="AzureAccountKey" value="" />`
-- *Option 2: local Redis*, web.config `<add key="DataAccess" value="Redis"/>`
-  - set `<add key="RedisPassword" value=""/>`
-  - set `<add key="RedisUrl" value="127.0.0.1"/>`
-  - Start local redis server
 - Start ngrok in a command shell: `ngrok http 80` and copy the url which forwards to 127.0.0.1:80.
 - go to the [Photon Dashboard](https://www.exitgames.com/en/Turnbased/Dashboard), create an application and set in the Webhooks tab the BaseUrl value: `[url from ngrok]/turnbased/[your app id]/`.
 - run the client demo
@@ -54,9 +38,25 @@ Use the Microsoft Azure Pass to sign up at [www.windowsazurepass.com](www.window
 
 ## Next Steps ##
 
-### Publish to Azure ###
-
+## Deploy to Azure
+Hit this link to create all infrastructure required to run locally and in Azure.  
+ 
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
 
+Note - this will host the WebAPI in Azure as well as the infrastructure.
 
-### Modify the webhooks logic ###
+Created Infrastructure
+*  Storage Account
+*  App Service Plan
+*  Web API
+*  Notification Hub Namespace and Notification Hub
+*  Application Insights
+
+Deployment of the Azure Infrastructure will also update connection strings of created resources in the source code so no changes are required to get the sample running in azure; 
+however connection strings will be required for Storage Account & Notification Hub, these are updated in `appsettings.json`
+
+## Notification Hub
+
+Azure Notification Hub requires clients to be registered with the [back-end service](https://docs.microsoft.com/en-us/azure/notification-hubs/notification-hubs-ios-aspnet-register-user-from-backend-to-push-notification),
+as well as notifications for [specific client OS](https://docs.microsoft.com/en-us/azure/notification-hubs/notification-hubs-aspnet-cross-platform-notification).
+A template has been created for messages in `PushNotifications/HubMessage.cs` & a template for sending a message in `PushNotification/AzureHubNotification.csx`, implement your own logic here for sending push notifications to specific clients.
