@@ -135,7 +135,7 @@
           "ConnectionStrings": [
             {
               "name": "AzureBlobConnectionString",
-              "connectionString": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_exitgamesstore_name')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0]"
+              "connectionString": "[Concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccounts_exitgamesstore_name'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_exitgamesstore_name')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
             },
             {
               "name": "NotificationHubConnectionString",
