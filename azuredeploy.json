@@ -152,7 +152,7 @@
             },
             {
               "name": "NotificationHubConnectionString",
-              "connectionString": "[listKeys(resourceId('Microsoft.NotificationHubs/namespaces/notificationHubs/authorizationRules', parameters('namespaces_TurnBased_name'), parameters('notificationHubs_pushnotification_name'), 'DefaultFullSharedAccessSignature'), providers('Microsoft.NotificationHubs', 'namespaces/notificationHubs').apiVersions[0]).primaryConnectionString]"
+              "connectionString": "[listKeys(resourceId('Microsoft.NotificationHubs/namespaces/notificationHubs/authorizationRules', parameters('namespaces_TurnBased_name'), parameters('notificationHubs_pushnotification_name')), providers('Microsoft.NotificationHubs', 'namespaces/notificationHubs').apiVersions[0]).primaryConnectionString]"
             }
           ]
         }
