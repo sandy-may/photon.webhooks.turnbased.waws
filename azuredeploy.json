@@ -175,7 +175,7 @@
       ],
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_PhotonTurnbased_name'))]",
-        "[resourceId('Microsoft.NotificationHubs/namespaces', parameters('namespaces_TurnBased_name'))]"
+        "[concat('Microsoft.NotificationHubs/namespaces/', parameters('notificationHubs_pushnotification_name'))]"
       ]
     }
   ]
