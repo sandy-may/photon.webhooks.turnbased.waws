@@ -27,8 +27,8 @@ namespace Photon.Webhooks.Turnbased
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
-            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<ConnectionStrings>(Configuration.GetSection("connectionStrings"));
+            services.Configure<AppSettings>(Configuration.GetSection("appSettings"));
             services.AddLogging();
             services.AddTransient<INotification, AzureHubNotification>();
             services.AddTransient<DataSources>();
