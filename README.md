@@ -26,10 +26,10 @@ Use the Microsoft Azure Pass to sign up at [www.windowsazurepass.com](www.window
 ## Run it locally
 
 - Open the sample running Visual Studio as administrator and build the project (admin privileges are required because a virtual directory is used).
-- Azure Storage*, web.config `<add key="DataAccess" value="Azure"/>`
-  - Select the Azure Storage > Manage Access Keys (copy paste into the config)
-  - set `<add key="AzureAccountName" value="" />`
-  - set `<add key="AzureAccountKey" value="" />`
+- Azure Storage*, appsettings.json `"DataSource": "Azure"`
+  - Select the Azure Storage > Access Keys (copy paste into the config) & Azure Notification Namespace > Notification Hub > Access Keys
+  - set `"AzureBlobConnectionString": "{your connection string here}"`
+  - set `"NotificationHubConnectionString": "{your connection string here}"`
 - Start ngrok in a command shell: `ngrok http 80` and copy the url which forwards to 127.0.0.1:80.
 - go to the [Photon Dashboard](https://www.exitgames.com/en/Turnbased/Dashboard), create an application and set in the Webhooks tab the BaseUrl value: `[url from ngrok]/turnbased/[your app id]/`.
 - run the client demo
